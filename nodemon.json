@@ -1,0 +1,9 @@
+{
+  "watch": ["*.js", "*.ts", "*.json", "*.yaml"],
+  "ignore": ["node_modules", "coverage", "dist"],
+  "restartable": "rs",
+  "ext": "ts",
+  "env": {
+    "NODE_ENV": "development"
+  }
+}
