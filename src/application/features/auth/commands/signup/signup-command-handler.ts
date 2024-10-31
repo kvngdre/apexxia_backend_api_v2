@@ -21,12 +21,10 @@ export class SignupCommandHandler
   ) {}
 
   public async handle(command: SignupCommand): Promise<ResultType<AuthenticationResponseDto>> {
-    // Provision database...
-
-    // create tenant
+    // Provisioning database and creating tenant...
     const tenant = new Tenant(
       command.lenderName,
-      `mongodb+srv://admin-user:pspP0rB7VSaUH4aA@cluster0.3wvau.mongodb.net/${command.lenderName.replaceAll(" ", "_").toLowerCase()}_db?retryWrites=true&w=majority`
+      `mongodb+srv://<user>:<password>@cluster0.3wvau.mongodb.net/${command.lenderName.replaceAll(" ", "_").toLowerCase()}_db?retryWrites=true&w=majority`
     );
 
     await this._tenantRepository.insert(tenant);

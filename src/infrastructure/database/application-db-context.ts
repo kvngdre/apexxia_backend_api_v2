@@ -34,8 +34,10 @@ export class ApplicationDbContext {
       throw new Error(`Failed to locate tenant ${tenantId} configurations`);
     }
 
-    // const connectionURI = tenant!.databaseConnectionURI.replace("<tenantName>", tenant.name);
-    const connectionURI = tenant!.databaseConnectionURI;
+    const connectionURI = tenant!.databaseConnectionURI
+      .replace("<user>", process.env.DB_USER)
+      .replace("<password>", process.env.DB_PASSWORD);
+    // const connectionURI = tenant!.databaseConnectionURI;
 
     const connection = this._connectionManager.getTenantDatabaseConnection(tenantId, connectionURI);
     this.synchronize(connection);
