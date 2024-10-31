@@ -1,14 +1,14 @@
 import { ClientSession } from "mongoose";
 import { injectable } from "tsyringe";
-import { HydratedTenantDocument, ITenantRepository, Tenant } from "@domain/tenants";
 import { CentralDbContext } from "@infrastructure/database/central-db-context";
+import { HydratedTenantDocument, ITenantRepository, Tenant } from "@domain/tenants";
 
 @injectable()
 export class TenantRepository implements ITenantRepository {
   constructor(private readonly _dbContext: CentralDbContext) {}
 
   public async findById(tenantId: string): Promise<HydratedTenantDocument | null> {
-    return this._dbContext.tenants.findById({ tenantId });
+    return this._dbContext.tenants.findById(tenantId);
   }
 
   public async find(): Promise<HydratedTenantDocument[]> {

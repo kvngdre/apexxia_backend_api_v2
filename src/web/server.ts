@@ -1,17 +1,14 @@
 import "reflect-metadata";
 import "express-async-errors";
 import "dotenv/config";
+import "./dependency-injection";
 import { container } from "tsyringe";
-import { registerServices } from "./dependency-injection";
 import WebAPI from "./web-api";
 import { GlobalErrorHandler } from "./web-infrastructure/global-error-handler";
 import { RedisService } from "@infrastructure/services";
 import { CentralDbContext } from "@infrastructure/database/central-db-context";
 
 async function startup() {
-  // Register application services to dependency injection container
-  registerServices();
-
   // Register process listeners
   await container.resolve(GlobalErrorHandler).registerProcessListeners();
 

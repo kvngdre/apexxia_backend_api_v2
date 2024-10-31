@@ -1,4 +1,4 @@
-import { container, Lifecycle } from "tsyringe";
+import { container } from "tsyringe";
 import {
   ErrorHandlingMiddleware,
   RequestLoggingMiddleware,
@@ -16,10 +16,10 @@ export function registerServices() {
 
   container.registerSingleton<AbstractMiddleware>(RequestLoggingMiddleware);
   container.registerSingleton<AbstractMiddleware>(ResourceNotFoundMiddleware);
-  container.register<AbstractErrorMiddleware>("ErrorHandlingMiddleware", ErrorHandlingMiddleware, {
-    lifecycle: Lifecycle.ResolutionScoped
-  });
-  container.registerSingleton("GlobalErrorHandler", GlobalErrorHandler);
+  container.registerSingleton<AbstractErrorMiddleware>(ErrorHandlingMiddleware);
+  container.registerSingleton(GlobalErrorHandler);
 
   container.resolve<ILogger>("Logger").logDebug("Services registration complete...✅");
 }
+
+registerServices();

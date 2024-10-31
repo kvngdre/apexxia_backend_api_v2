@@ -6,7 +6,7 @@ import info from "../../../package.json";
 
 @scoped(Lifecycle.ResolutionScoped)
 export class SystemController extends BaseController {
-  public async getHealth(req: Request, res: Response) {
+  public getHealth = async (req: Request, res: Response) => {
     function formatUptime(seconds: number): string {
       const hours = Math.floor(seconds / 3600);
       const minutes = Math.floor((seconds % 3600) / 60);
@@ -26,9 +26,9 @@ export class SystemController extends BaseController {
     };
 
     res.status(200).json(ApiResponse.success("Retrieved API health information", payload));
-  }
+  };
 
-  public async getAPIDoc(req: Request, res: Response) {
+  public getAPIDoc = async (req: Request, res: Response) => {
     res.redirect("https://documenter.getpostman.com/view/22366860/2s93CPqXyH");
-  }
+  };
 }

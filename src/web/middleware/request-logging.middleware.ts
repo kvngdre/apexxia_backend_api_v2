@@ -13,7 +13,7 @@ export class RequestLoggingMiddleware extends AbstractMiddleware {
 
   public execute(req: Request, res: Response, next: NextFunction): void | Promise<void> {
     this._createCustomTokens(req, res);
-    const format = !Environment.isDevelopment
+    const format = Environment.isDevelopment
       ? "dev"
       : ':date[iso] :remote-addr - :remote-user ":method :url :status :res[content-length] :response-time ms" :reqContext';
 

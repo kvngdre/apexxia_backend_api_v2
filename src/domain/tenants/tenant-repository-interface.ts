@@ -1,8 +1,8 @@
-import { ClientSession } from "mongoose";
+import { ClientSession, Types } from "mongoose";
 import { HydratedTenantDocument, Tenant } from "./tenant-entity";
 
 export interface ITenantRepository {
-  findById(tenantId: string): Promise<HydratedTenantDocument | null>;
+  findById(tenantId: Types.ObjectId | string): Promise<HydratedTenantDocument | null>;
   find(): Promise<HydratedTenantDocument[]>;
   insert(Tenant: Tenant, options?: { session: ClientSession }): Promise<HydratedTenantDocument>;
   update(

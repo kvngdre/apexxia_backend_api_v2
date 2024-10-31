@@ -53,7 +53,7 @@ export class CentralDbContext {
     if (cachedConfig) return JSON.parse(cachedConfig);
 
     // Fetch from central database if not in cache
-    const tenant = await this.tenants.findOne({ tenantId });
+    const tenant = await this.tenants.findById(tenantId);
     if (tenant) {
       // Cache in Redis
       await this._redisService.set(`tenant:${tenantId}`, JSON.stringify(tenant), 86400);
@@ -62,7 +62,7 @@ export class CentralDbContext {
     return tenant;
   }
 
-  public async startSession() {
+  public async startTransactionSession() {
     return this._connection.startSession();
   }
 

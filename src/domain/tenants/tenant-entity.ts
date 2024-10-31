@@ -14,24 +14,14 @@ export class Tenant extends Entity {
       databaseConnectionURI: {
         type: String,
         required: true
-      },
-
-      gcpSecretName: {
-        type: String
-      },
-
-      gcpSecretVersionName: {
-        type: String
       }
     },
     { timestamps: true }
   );
 
   constructor(
-    public name: string,
-    public databaseConnectionURI: string,
-    public gcpSecretName: string,
-    public gcpSecretVersionName: string
+    public readonly name: string,
+    public databaseConnectionURI: string
   ) {
     super();
   }

@@ -1,6 +1,6 @@
-import { ILogger } from "@application/abstractions/logging";
 import { Connection, createConnection } from "mongoose";
 import { inject, singleton } from "tsyringe";
+import { ILogger } from "@application/abstractions/logging";
 
 @singleton()
 export class ConnectionManager {
@@ -18,9 +18,15 @@ export class ConnectionManager {
     const newConnection = createConnection(connectionURI);
 
     // Event listeners for logging
-    newConnection.on("connected", () => this._logger.logInfo(`Connected to database for tenant ${tenantId}`));
-    newConnection.on("disconnected", () => this._logger.logInfo(`Disconnected from database for tenant ${tenantId}`));
-    newConnection.on("error", (error) => this._logger.logInfo(`Database error for tenant ${tenantId}: ${error}`));
+    newConnection.on("connected", () =>
+      this._logger.logInfo(`Connected to database for tenant ${tenantId}`)
+    );
+    newConnection.on("disconnected", () =>
+      this._logger.logInfo(`Disconnected from database for tenant ${tenantId}`)
+    );
+    newConnection.on("error", (error) =>
+      this._logger.logInfo(`Database error for tenant ${tenantId}: ${error}`)
+    );
 
     // Cache and return the connection
     this._connections.set(tenantId, newConnection);

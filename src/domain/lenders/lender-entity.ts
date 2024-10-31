@@ -1,11 +1,122 @@
+import { HydratedDocument, Model, Schema, Types } from "mongoose";
 import { Entity } from "@shared-kernel/entity";
-import { HydratedDocument, Model, Schema } from "mongoose";
 
 export class Lender extends Entity {
   public static readonly collectionName: string = "Lender";
 
-  public static readonly schema = new Schema<Lender, LenderModel, ILenderMethods>({}, { timestamps: true });
+  public static readonly schema = new Schema<Lender, LenderModel, ILenderMethods>(
+    {
+      tenantId: {
+        type: Schema.Types.ObjectId,
+        required: true
+      },
 
+      name: {
+        type: String,
+        required: true
+      },
+
+      addressId: {
+        type: Schema.Types.ObjectId,
+        default: null
+      },
+
+      cacNumber: {
+        type: String,
+        default: null
+      },
+
+      // category: {
+      //   type: String,
+      //   // enum: LenderCategory,
+      //   default: null
+      // },
+
+      // status: {
+      //   type: String
+      //   // enum: Object.values(LENDER_STATUS),
+      //   // default: LENDER_STATUS.PENDING
+      // },
+
+      logo: {
+        type: String,
+        default: null
+      }
+
+      // documentation: {
+      //   type: [
+      //     {
+      //       name: { type: String, required: true },
+      //       type: { type: String, required: true },
+      //       url: { type: String, required: true },
+      //       expiresAt: { type: Date, default: null }
+      //     }
+      //   ]
+      // },
+
+      // configurations: {
+      //   allowUserPasswordReset: {
+      //     type: Boolean,
+      //     default: false
+      //   },
+
+      //   socials: {
+      //     type: [
+      //       {
+      //         platform: { type: String, trim: true, required: true },
+      //         url: { type: String, trim: true, required: true }
+      //       }
+      //     ]
+      //   },
+
+      //   support_email: {
+      //     type: String,
+      //     default: null
+      //   },
+
+      //   support_phone: {
+      //     type: String,
+      //     default: null
+      //   },
+
+      //   form: {
+      //     type: {
+      //       id: {
+      //         type: String,
+      //         default: null
+      //       },
+
+      //       background: {
+      //         type: String,
+      //         default: "#FFFFFF"
+      //       },
+
+      //       font: {
+      //         type: String,
+      //         default: "Roboto"
+      //       },
+
+      //       fontcolor: {
+      //         type: String,
+      //         default: "#000000"
+      //       }
+      //     }
+      //   }
+      // }
+    },
+    { timestamps: true }
+  );
+
+  constructor(
+    public tenantId: Types.ObjectId,
+    public name: string
+  ) {
+    super();
+  }
+
+  public addressId: Types.ObjectId | null = null;
+  public cacNumber: string | null = null;
+  public logo: string | null = null;
   public _doc: Lender;
 }
 

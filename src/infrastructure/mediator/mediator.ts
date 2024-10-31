@@ -42,7 +42,7 @@ export class Mediator implements IMediator {
   private async _discoverAndRegisterHandlers() {
     const pattern = "**/*-handler.{ts,js}";
     const handlerFiles = sync(pattern, {
-      ignore: ["node_modules/**"]
+      ignore: ["node_modules/**", "dist/**"]
     });
 
     for (const file of handlerFiles) {
@@ -58,7 +58,8 @@ export class Mediator implements IMediator {
         // Check if the handler class implements the IRequestHandler interface
         if (this._isRequestHandler(handlerClass)) {
           // Resolve the handler instance using tsyringe container
-          const handlerInstance = container.resolve<IRequestHandler<IRequest, unknown>>(handlerClass);
+          const handlerInstance =
+            container.resolve<IRequestHandler<IRequest, unknown>>(handlerClass);
 
           // Extract the request type from the handler (optional: based on naming convention or custom logic)
           const requestName = this._getRequestName(handlerClass);
