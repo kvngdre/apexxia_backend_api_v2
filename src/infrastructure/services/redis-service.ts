@@ -28,6 +28,11 @@ export class RedisService implements IRedisService {
     }
   }
 
+  // Disconnect from Redis
+  public async disconnect(): Promise<void> {
+    await this._client.disconnect();
+  }
+
   // Get value by key
   public async get(key: string): Promise<string | null> {
     return this._client.get(key);
@@ -45,10 +50,5 @@ export class RedisService implements IRedisService {
   // Delete key
   public async delete(key: string): Promise<void> {
     await this._client.del(key);
-  }
-
-  // Disconnect from Redis
-  public async disconnect(): Promise<void> {
-    await this._client.disconnect();
   }
 }

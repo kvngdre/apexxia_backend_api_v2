@@ -3,10 +3,10 @@ import "express-async-errors";
 import "dotenv/config";
 import { container } from "tsyringe";
 import { registerServices } from "./dependency-injection";
-import Webapp from "./webapp";
-import { GlobalErrorHandler } from "./infrastructure/global-error-handler";
-import { ApplicationDbContext } from "@infrastructure/database/application-db-context";
+import WebAPI from "./web-api";
+import { GlobalErrorHandler } from "./web-infrastructure/global-error-handler";
 import { RedisService } from "@infrastructure/services";
+import { CentralDbContext } from "@infrastructure/database/central-db-context";
 
 async function startup() {
   // Register application services to dependency injection container
@@ -18,10 +18,11 @@ async function startup() {
   // Initialize Redis connection
   await container.resolve(RedisService).connect();
 
-  await container.resolve(ApplicationDbContext).connect();
+  // Connect to central database
+  await container.resolve(CentralDbContext).connect();
 
-  const app = new Webapp({
-    port: Number(process.env.PORT)
+  const app = new WebAPI({
+    port: Number(process.env.API_PORT)
   });
 
   app.run();

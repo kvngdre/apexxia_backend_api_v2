@@ -13,12 +13,12 @@ export class GlobalErrorHandler {
 
   public async registerProcessListeners() {
     process.on("unhandledRejection", (reason) => {
-      this._logger.logDebug("===unhandledRejection===");
+      this._logger.logWarn("===unhandledRejection===");
       throw reason;
     });
 
     process.on("uncaughtException", async (error) => {
-      this._logger.logDebug("===uncaughtException===");
+      this._logger.logWarn("===uncaughtException===");
       await this.handle(error);
     });
 

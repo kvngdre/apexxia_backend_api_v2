@@ -8,16 +8,21 @@ import { DateTimeProvider } from "./time";
 // import { NotificationPublisher } from "./publisher";
 // import { DeadLetterQueueConsumer } from "./consumer/dead-letter-queue-consumer";
 import { IMediator } from "./mediator/mediator-interface";
-import { ConnectionManager } from "./database/connection-manager";
+import { ConnectionManager, CentralDbContext } from "./database";
 import { RedisService } from "./services";
+import { TenantRepository } from "./repositories";
+import { ITenantRepository } from "@domain/tenants";
 
 export function registerInfrastructureServices() {
   container.registerSingleton<ILogger>("Logger", Logger);
   container.registerSingleton<ApplicationDbContext>("ApplicationDbContext", ApplicationDbContext);
+  container.registerSingleton<CentralDbContext>("CentralDbContext", CentralDbContext);
   container.registerSingleton<ConnectionManager>("ConnectionManager", ConnectionManager);
   container.registerSingleton<RedisService>("RedisService", RedisService);
   container.registerSingleton<IMediator>("Mediator", Mediator);
   container.registerSingleton<IDateTimeProvider>("DateTimeProvider", DateTimeProvider);
+
+  container.register<ITenantRepository>("TenantRepository", TenantRepository);
 
   // container.registerSingleton("NotificationPublisher", NotificationPublisher);
   // container.registerSingleton("DeadLetterQueueConsumer", DeadLetterQueueConsumer);

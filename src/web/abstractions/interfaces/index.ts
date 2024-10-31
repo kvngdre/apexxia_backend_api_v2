@@ -1,1 +1,1 @@
-export * from "./webapp-options.interface";
+export * from "./web-api-options.interface";

@@ -1,0 +1,40 @@
+import { ClientSession } from "mongoose";
+import { injectable } from "tsyringe";
+import { HydratedTenantDocument, ITenantRepository, Tenant } from "@domain/tenants";
+import { CentralDbContext } from "@infrastructure/database/central-db-context";
+
+@injectable()
+export class TenantRepository implements ITenantRepository {
+  constructor(private readonly _dbContext: CentralDbContext) {}
+
+  public async findById(tenantId: string): Promise<HydratedTenantDocument | null> {
+    return this._dbContext.tenants.findById({ tenantId });
+  }
+
+  public async find(): Promise<HydratedTenantDocument[]> {
+    return this._dbContext.tenants.find();
+  }
+
+  public async insert(
+    tenant: Tenant,
+    options?: { session: ClientSession }
+  ): Promise<HydratedTenantDocument> {
+    const [newTenant] = await this._dbContext.tenants.create([tenant], options);
+    return newTenant!;
+  }
+
+  public async update(
+    tenant: HydratedTenantDocument,
+    changes: Partial<Tenant> = {},
+    options?: { session: ClientSession }
+  ): Promise<HydratedTenantDocument> {
+    return tenant.updateOne(Object.assign({ ...tenant, _id: undefined }, changes), {
+      new: true,
+      session: options?.session
+    });
+  }
+
+  public async delete(tenant: HydratedTenantDocument): Promise<void> {
+    tenant.deleteOne();
+  }
+}

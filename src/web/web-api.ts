@@ -3,27 +3,31 @@ import cors from "cors";
 import helmet from "helmet";
 import { container } from "tsyringe";
 import { Environment } from "src/shared-kernel";
-import { IWebAppOptions } from "./abstractions/interfaces";
-import { ErrorHandlingMiddleware, RequestLoggingMiddleware, ResourceNotFoundMiddleware } from "./middleware";
+import { IWebAppOptions as IWebAPIOptions } from "./abstractions/interfaces";
+import {
+  ErrorHandlingMiddleware,
+  RequestLoggingMiddleware,
+  ResourceNotFoundMiddleware
+} from "./middleware";
 import { Logger } from "@infrastructure/logging/logger";
-import { apiRouter } from "./routers/api-router";
+import apiRouter from "./routers";
 
-export default class Webapp {
-  private readonly _options: IWebAppOptions;
+export default class WebAPI {
+  private readonly _options: IWebAPIOptions;
   private readonly _app: Express = express();
   private readonly _requestLoggingMiddleware = container.resolve(RequestLoggingMiddleware);
   private readonly _resourceNotFoundMiddleware = container.resolve(ResourceNotFoundMiddleware);
   private readonly _errorHandlingMiddleware = container.resolve(ErrorHandlingMiddleware);
   private readonly _logger: Logger = container.resolve(Logger);
 
-  constructor(options: IWebAppOptions) {
+  constructor(options: IWebAPIOptions) {
     this._parsePortNumberOrThrow(options.port);
 
     this._options = options;
     this._setup();
   }
 
-  public getOptions(): IWebAppOptions {
+  public getOptions(): IWebAPIOptions {
     return this._options;
   }
 
@@ -32,7 +36,7 @@ export default class Webapp {
    * @param key The option to be set.
    * @param value The value of the option.
    */
-  public setOption<K extends keyof IWebAppOptions>(key: K, value: IWebAppOptions[K]): void {
+  public setOption<K extends keyof IWebAPIOptions>(key: K, value: IWebAPIOptions[K]): void {
     if (key === "port") {
       this._parsePortNumberOrThrow(value as string | number);
     }
@@ -47,7 +51,7 @@ export default class Webapp {
       this._logger.logInfo(`Server running on port: [${port}]`);
 
       if (Environment.isDevelopment) {
-        this._logger.logInfo(`http://localhost:${port}/api/v1`);
+        this._logger.logInfo(`http://localhost:${port}/api/v1/system/api-doc`);
       }
     });
   }
