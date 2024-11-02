@@ -22,6 +22,11 @@ export class TenantExceptions {
   public static readonly DuplicateName = (name: string) =>
     Exception.Conflict("Tenant.DuplicateName", `A tenant with name ${name} already exists.`);
 
+  public static readonly DuplicateSubdomain = Exception.Conflict(
+    "Tenant.DuplicateSubdomain",
+    `Subdomain has already been taken`
+  );
+
   public static readonly DuplicateEmail = Exception.Conflict(
     "Tenant.DuplicateEmail",
     "A tenant with this email address already exists."

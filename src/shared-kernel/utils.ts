@@ -1,4 +1,4 @@
-export class AuthUtils {
+export class Utils {
   static generateRandomPassword(
     length: number = 6,
     options: { includeNumbers?: boolean; includeSymbols?: boolean; uppercase?: boolean } = {
@@ -56,5 +56,30 @@ export class AuthUtils {
       [array[i], array[j]] = [array[j]!, array[i]!];
     }
     return array.join("");
+  }
+
+  public static omitUndefinedFields(unparsedData: object): object {
+    // Create a shallow copy of the input object
+    const data: { [key: string]: unknown } = unparsedData as { [key: string]: unknown };
+
+    const keys = Object.keys(data);
+
+    for (const key of keys) {
+      if (data[key] && typeof data[key] === "object") {
+        // If the value is an object, recurse into it
+        Utils.omitUndefinedFields(data[key] as { [key: string]: object });
+
+        // If the result after recurse is an empty object, delete the field
+        if (Object.keys(data[key]).length === 0) {
+          delete data[key];
+        }
+      }
+
+      if (typeof data[key] === "undefined") {
+        delete data[key];
+      }
+    }
+
+    return data;
   }
 }

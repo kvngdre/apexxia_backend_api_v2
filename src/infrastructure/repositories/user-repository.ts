@@ -29,11 +29,11 @@ export class UserRepository implements IUserRepository {
   }
 
   public async update(
-    User: HydratedUserDocument,
+    user: HydratedUserDocument,
     changes: Partial<User> = {},
     options?: { session: ClientSession }
   ): Promise<HydratedUserDocument> {
-    return User.updateOne(Object.assign({ ...User, _id: undefined }, changes), {
+    return user.updateOne(Object.assign({ ...user._doc, _id: undefined }, changes), {
       new: true,
       session: options?.session
     });

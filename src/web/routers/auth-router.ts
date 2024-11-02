@@ -6,12 +6,13 @@ import { ResolveTenantMiddleware } from "@web/middleware";
 export const authRouter = Router();
 
 const authController = container.resolve(AuthController);
-const resolveTenantIdMiddleware = container.resolve(ResolveTenantMiddleware).execute;
+const resolveTenantMiddleware = container.resolve(ResolveTenantMiddleware).execute;
 
 authRouter.post("/signup", authController.signup);
-authRouter.post("/login", authController.login);
+authRouter.post("/login", resolveTenantMiddleware, authController.login);
 authRouter.post(
   "/resend-temporary-password",
-  resolveTenantIdMiddleware,
+  resolveTenantMiddleware,
   authController.resendTempPassword
 );
+authRouter.post("/reset-password", resolveTenantMiddleware, authController.resetPassword);

@@ -22,4 +22,9 @@ export class UserExceptions {
     "User.PasswordExists",
     "Password exists and cannot be set. Please use change password to update your existing password."
   );
+
+  public static readonly TemporaryPassword = Exception.Unauthorized(
+    "User.TemporaryPassword",
+    "Your password is temporary. A password reset is required to continue."
+  );
 }
