@@ -1,6 +1,6 @@
 import { ClientSession } from "mongoose";
 import { injectable } from "tsyringe";
-import { HydratedLenderDocument, ILenderRepository, Lender } from "@domain/lenders";
+import { HydratedLenderDocument, ILenderRepository, Lender } from "@domain/lender";
 import { ApplicationDbContext } from "@infrastructure/database";
 
 @injectable()

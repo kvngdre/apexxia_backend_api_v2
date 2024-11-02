@@ -1,11 +1,12 @@
-import { Types } from "mongoose";
-import { User } from "@domain/users/user-entity";
+import { User } from "@domain/user/user-entity";
+import { Tenant } from "@domain/tenant";
 
 export class AuthenticationResponseDto {
   private constructor(
     public readonly id: string,
     public readonly tenantId: string,
     public readonly lenderId: string,
+    public readonly baseUrl: string,
     public readonly displayName: string,
     public readonly email: string,
     public readonly isEmailVerified: boolean,
@@ -13,11 +14,12 @@ export class AuthenticationResponseDto {
     public readonly token?: string
   ) {}
 
-  public static from(user: User, tenantId: Types.ObjectId | string, token?: string) {
+  public static from(user: User, tenant?: Tenant, token?: string) {
     return new AuthenticationResponseDto(
       user.id,
-      tenantId.toString(),
+      tenant!._id!.toString(),
       user.lenderId.toString(),
+      "http://".concat(tenant!.subdomain).concat(".localhost:4048/api/v1"),
       user.displayName,
       user.email,
       user.isEmailVerified,

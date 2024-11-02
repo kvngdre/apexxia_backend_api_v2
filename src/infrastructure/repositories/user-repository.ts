@@ -1,6 +1,6 @@
 import { ClientSession } from "mongoose";
 import { injectable } from "tsyringe";
-import { HydratedUserDocument, IUserRepository, User } from "@domain/users";
+import { HydratedUserDocument, IUserRepository, User } from "@domain/user";
 import { ApplicationDbContext } from "@infrastructure/database/application-db-context";
 
 @injectable()
@@ -9,6 +9,10 @@ export class UserRepository implements IUserRepository {
 
   public async findById(tenantId: string, userId: string): Promise<HydratedUserDocument | null> {
     return (await this._dbContext.users(tenantId)).findById(userId);
+  }
+
+  public async findByEmail(tenantId: string, email: string): Promise<HydratedUserDocument | null> {
+    return (await this._dbContext.users(tenantId)).findOne({ email });
   }
 
   public async find(tenantId: string): Promise<HydratedUserDocument[]> {

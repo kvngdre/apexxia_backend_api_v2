@@ -1,6 +1,6 @@
 import { HydratedDocument, Model, Schema, Types } from "mongoose";
 import { Entity } from "@shared-kernel/entity";
-import { Lender } from "@domain/lenders";
+import { Lender } from "@domain/lender";
 
 export class User extends Entity {
   public static readonly collectionName: string = "User";

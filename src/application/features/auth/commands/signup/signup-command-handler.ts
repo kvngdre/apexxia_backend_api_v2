@@ -3,10 +3,10 @@ import { IRequestHandler } from "@infrastructure/mediator";
 import { SignupCommand } from "./signup-command";
 import { AuthenticationResponseDto } from "../../shared/authentication-response-dto";
 import { Result, ResultType, Encryption } from "@shared-kernel/index";
-import { ITenantRepository, Tenant } from "@domain/tenants";
+import { ITenantRepository, Tenant, TenantExceptions } from "@domain/tenant";
 import { ApplicationDbContext } from "@infrastructure/database";
-import { ILenderRepository, Lender } from "@domain/lenders";
-import { IUserRepository, User } from "@domain/users";
+import { ILenderRepository, Lender } from "@domain/lender";
+import { IUserRepository, User } from "@domain/user";
 import { AuthUtils } from "../../shared/auth-utils";
 
 @scoped(Lifecycle.ResolutionScoped)
@@ -21,10 +21,21 @@ export class SignupCommandHandler
   ) {}
 
   public async handle(command: SignupCommand): Promise<ResultType<AuthenticationResponseDto>> {
-    // Provisioning database and creating tenant...
+    if (!(await this._tenantRepository.isEmailUnique(command.email))) {
+      return Result.failure(TenantExceptions.DuplicateEmail);
+    }
+
+    if (!(await this._tenantRepository.isSubdomainUnique(command.subdomain))) {
+      return Result.failure(TenantExceptions.DuplicateEmail);
+    }
+
+    // Simulating provisioning database and creating tenant...
+    const subdomain = command.subdomain.toLowerCase();
     const tenant = new Tenant(
       command.lenderName,
-      `mongodb+srv://<user>:<password>@cluster0.3wvau.mongodb.net/${command.lenderName.replaceAll(" ", "_").toLowerCase()}_db?retryWrites=true&w=majority`
+      subdomain,
+      command.email,
+      `mongodb+srv://<user>:<password>@cluster0.3wvau.mongodb.net/${subdomain}_db?retryWrites=true&w=majority`
     );
 
     await this._tenantRepository.insert(tenant);
@@ -60,8 +71,8 @@ export class SignupCommandHandler
 
     // return
     return Result.success(
-      "Registration successful, please check email to continue with registration",
-      AuthenticationResponseDto.from(user, tenant._id)
+      "Signup successful! Temporary password sent to email.",
+      AuthenticationResponseDto.from(user, tenant)
     );
   }
 }

@@ -13,5 +13,7 @@ export class ResourceNotFoundMiddleware extends AbstractMiddleware {
     );
 
     res.status(404).json(ApiResponse.failure(exception, res));
+
+    next();
   }
 }

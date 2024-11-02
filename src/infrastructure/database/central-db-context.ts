@@ -3,7 +3,7 @@ import { singleton } from "tsyringe";
 import { Entity } from "@shared-kernel/entity";
 import { RedisService } from "@infrastructure/services";
 import { Logger } from "@infrastructure/logging/logger";
-import { Tenant, TenantModel } from "@domain/tenants";
+import { Tenant, TenantModel } from "@domain/tenant";
 
 @singleton()
 export class CentralDbContext {
@@ -28,7 +28,7 @@ export class CentralDbContext {
         this.synchronize();
       }
 
-      this._logger.logInfo("Connected to central database.");
+      this._logger.logDebug("Connected to central database...✅");
     } catch (error: unknown) {
       if (error instanceof Error)
         this._logger.logError(

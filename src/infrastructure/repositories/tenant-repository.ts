@@ -1,7 +1,7 @@
 import { ClientSession } from "mongoose";
 import { injectable } from "tsyringe";
 import { CentralDbContext } from "@infrastructure/database/central-db-context";
-import { HydratedTenantDocument, ITenantRepository, Tenant } from "@domain/tenants";
+import { HydratedTenantDocument, ITenantRepository, Tenant } from "@domain/tenant";
 
 @injectable()
 export class TenantRepository implements ITenantRepository {
@@ -9,6 +9,10 @@ export class TenantRepository implements ITenantRepository {
 
   public async findById(tenantId: string): Promise<HydratedTenantDocument | null> {
     return this._dbContext.tenants.findById(tenantId);
+  }
+
+  public async findBySubdomain(subdomain: string): Promise<HydratedTenantDocument | null> {
+    return this._dbContext.tenants.findOne({ subdomain });
   }
 
   public async find(): Promise<HydratedTenantDocument[]> {
@@ -36,5 +40,17 @@ export class TenantRepository implements ITenantRepository {
 
   public async delete(tenant: HydratedTenantDocument): Promise<void> {
     tenant.deleteOne();
+  }
+
+  public async isEmailUnique(email: string): Promise<boolean> {
+    const matches = await this._dbContext.tenants.find({ email });
+
+    return matches.length < 1;
+  }
+
+  public async isSubdomainUnique(email: string): Promise<boolean> {
+    const matches = await this._dbContext.tenants.find({ email });
+
+    return matches.length < 1;
   }
 }

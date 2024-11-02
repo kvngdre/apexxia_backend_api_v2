@@ -3,9 +3,9 @@ import { singleton } from "tsyringe";
 import { Entity } from "@shared-kernel/entity";
 import { ConnectionManager } from "./connection-manager";
 import { CentralDbContext } from "./central-db-context";
-import { Lender, LenderModel } from "@domain/lenders";
-import { User, UserModel } from "@domain/users";
-import { Address, AddressModel } from "@domain/addresses";
+import { Lender, LenderModel } from "@domain/lender";
+import { User, UserModel } from "@domain/user";
+import { Address, AddressModel } from "@domain/address";
 
 @singleton()
 export class ApplicationDbContext {

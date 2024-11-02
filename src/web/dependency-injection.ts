@@ -1,6 +1,7 @@
 import { container } from "tsyringe";
 import {
   ErrorHandlingMiddleware,
+  ResolveTenantMiddleware,
   RequestLoggingMiddleware,
   ResourceNotFoundMiddleware
 } from "./middleware";
@@ -16,6 +17,7 @@ export function registerServices() {
 
   container.registerSingleton<AbstractMiddleware>(RequestLoggingMiddleware);
   container.registerSingleton<AbstractMiddleware>(ResourceNotFoundMiddleware);
+  container.registerSingleton<AbstractMiddleware>(ResolveTenantMiddleware);
   container.registerSingleton<AbstractErrorMiddleware>(ErrorHandlingMiddleware);
   container.registerSingleton(GlobalErrorHandler);
 

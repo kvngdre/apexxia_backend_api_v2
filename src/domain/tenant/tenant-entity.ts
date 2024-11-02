@@ -11,9 +11,26 @@ export class Tenant extends Entity {
         required: true
       },
 
+      email: {
+        type: String,
+        unique: true,
+        required: true
+      },
+
+      subdomain: {
+        type: String,
+        unique: true,
+        required: true
+      },
+
       databaseConnectionURI: {
         type: String,
         required: true
+      },
+
+      signupDate: {
+        type: Date,
+        default: new Date()
       }
     },
     { timestamps: true }
@@ -21,11 +38,14 @@ export class Tenant extends Entity {
 
   constructor(
     public readonly name: string,
+    public subdomain: string,
+    public email: string,
     public databaseConnectionURI: string
   ) {
     super();
   }
 
+  public signupDate: Date = new Date();
   public _doc: Tenant;
 }
 
