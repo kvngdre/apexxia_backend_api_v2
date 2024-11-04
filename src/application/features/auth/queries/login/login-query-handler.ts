@@ -8,45 +8,56 @@ import { IUserRepository } from "@domain/user/user-repository-interface";
 import { Encryption } from "@shared-kernel/encryption";
 import { AuthenticationExceptions } from "../../shared";
 import { LoginQueryValidator } from "./login-query-validator";
-import { UserExceptions } from "@domain/user";
+import { UserExceptions, UserStatus } from "@domain/user";
+import { ISessionRepository, Session } from "@domain/session";
 
 @scoped(Lifecycle.ResolutionScoped)
 export class LoginQueryHandler implements IRequestHandler<LoginQuery, AuthenticationResponseDto> {
   constructor(
     private readonly _validator: LoginQueryValidator,
     @inject("JwtService") private readonly _jwtService: IJwtService,
-    @inject("UserRepository") private readonly _userRepository: IUserRepository
+    @inject("UserRepository") private readonly _userRepository: IUserRepository,
+    @inject("SessionRepository") private readonly _sessionRepository: ISessionRepository
   ) {}
 
   public async handle(query: LoginQuery): Promise<ResultType<AuthenticationResponseDto>> {
     const { isFailure, exception, value } = this._validator.validate(query);
+    if (isFailure) return Result.failure(exception);
 
-    if (isFailure) {
-      return Result.failure(exception);
-    }
-
-    const user = await this._userRepository.findByEmail(value.tenantId, value.email);
+    const user = await this._userRepository.findByEmail(value.tenant.id, value.email);
 
     if (user === null || !Encryption.compare(user.hashedPassword as string, value.password)) {
       return Result.failure(AuthenticationExceptions.InvalidCredentials);
     }
-
     if (user.isTemporaryPassword) {
       return Result.failure(UserExceptions.TemporaryPassword);
     }
 
-    const token = this._jwtService.generateToken({
+    if (
+      user.status === UserStatus.NEW &&
+      user.onboardingProcess.steps.length > 0 &&
+      !user.onboardingProcess.isComplete
+    ) {
+      user.status = UserStatus.ONBOARDING;
+      await this._userRepository.update(user);
+    }
+
+    const { token, expiresAt } = this._jwtService.generateToken({
       sub: user.id,
       id: user.id,
-      tenantId: query.tenantId,
+      tenantId: value.tenant.id,
       lenderId: user.lenderId.toString()
     });
+
+    const session = new Session(user.id, Encryption.encryptText(token), new Date(expiresAt));
+
+    await this._sessionRepository.upsertOnUserId(session);
 
     // TODO: Raise login domain event
 
     return Result.success(
       "Login successful",
-      AuthenticationResponseDto.from(user, undefined, token)
+      AuthenticationResponseDto.from(user, value.tenant, token)
     );
   }
 }

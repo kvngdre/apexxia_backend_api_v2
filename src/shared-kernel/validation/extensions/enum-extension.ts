@@ -1,7 +1,15 @@
 import { ExtensionFactory } from "joi";
 
+// export interface JoiStringExtend<T> extends StringSchema<T> {
+//   enum(enumType: object): AnySchema;
+// }
+
+// export interface JoiStringEnumExtend extends Root {
+//   string(): JoiStringExtend<string>;
+// }
+
 // Define a custom Joi extension
-const StringEnumExtension: ExtensionFactory = (joi) => ({
+export const stringEnumExtension: ExtensionFactory = (joi) => ({
   type: "string",
   base: joi.string(),
   messages: {

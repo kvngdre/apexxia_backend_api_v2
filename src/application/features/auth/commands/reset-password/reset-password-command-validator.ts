@@ -3,7 +3,6 @@ import joi from "joi";
 import {
   AbstractValidator,
   emailRule,
-  idRule,
   passwordRule,
   ValidationResultType
 } from "@shared-kernel/validation";
@@ -13,7 +12,7 @@ import { ResetPasswordCommand } from "./reset-password-command";
 export class ResetPasswordCommandValidator extends AbstractValidator<ResetPasswordCommand> {
   public validate(request: ResetPasswordCommand): ValidationResultType<ResetPasswordCommand> {
     const schema = joi.object<ResetPasswordCommand>({
-      tenantId: idRule.label("Tenant ID").required(),
+      tenant: joi.any(),
       email: emailRule.required(),
       tempPassword: joi.string().label("Temporary password").trim().max(256).required(),
       newPassword: passwordRule.label("New password").required(),

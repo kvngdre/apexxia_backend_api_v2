@@ -1,9 +1,9 @@
-export enum LenderStatus {
+export enum UserStatus {
   NEW = "new",
   ONBOARDING = "onboarding",
   DOCUMENT_REVIEW = "document review",
-  REJECTED = "rejected",
-  VERIFIED = "verified",
+  ACTIVE = "active",
+  INACTIVE = "inactive",
   DEACTIVATED = "deactivated",
   SUSPENDED = "suspended",
   BLOCKED = "blocked"

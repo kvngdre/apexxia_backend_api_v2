@@ -3,6 +3,7 @@ import joi from "joi";
 import {
   AbstractValidator,
   emailRule,
+  lenderNameRule,
   nameRule,
   personNameRule,
   ValidationResultType
@@ -13,7 +14,7 @@ import { SignupCommand } from "./signup-command";
 export class SignupCommandValidator extends AbstractValidator<SignupCommand> {
   public validate(request: SignupCommand): ValidationResultType<SignupCommand> {
     const schema = joi.object<SignupCommand>({
-      lenderName: nameRule.required(),
+      lenderName: lenderNameRule.required(),
       subdomain: nameRule.label("Subdomain").required(),
       firstName: personNameRule.label("First name").required(),
       lastName: personNameRule.label("Last name").required(),

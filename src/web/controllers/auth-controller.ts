@@ -28,7 +28,7 @@ export class AuthController extends BaseController {
     req: Request<object, object, { email: string }>,
     res: Response
   ) => {
-    const command = new ResendTempPasswordCommand(req.tenant!.id, req.body.email);
+    const command = new ResendTempPasswordCommand(req.tenant!, req.body.email);
 
     const result = await this.sender.send(command);
 
@@ -41,7 +41,7 @@ export class AuthController extends BaseController {
     req: Request<object, object, { email: string; password: string }>,
     res: Response
   ) => {
-    const command = new LoginQuery(req.tenant!.id, req.body.email, req.body.password);
+    const command = new LoginQuery(req.tenant!, req.body.email, req.body.password);
 
     const result = await this.sender.send(command);
 
@@ -55,7 +55,7 @@ export class AuthController extends BaseController {
     res: Response
   ) => {
     const command = new ResetPasswordCommand(
-      req.tenant!.id,
+      req.tenant!,
       req.body.email,
       req.body.tempPassword,
       req.body.newPassword,

@@ -1,18 +1,5 @@
 import { OnboardingProcessStatus } from "./onboarding-process-status-enum";
-
-export interface IOnboardingStep {
-  stepName: string;
-  relatedEntity: string;
-  requiredFields: string[];
-  data: unknown;
-  isComplete: boolean;
-  status: OnboardingProcessStatus;
-  startDateTime: Date | null;
-  completeDateTime: Date | null;
-}
-
-// Memento
-export class OnboardingStep implements IOnboardingStep {
+export class OnboardingStep {
   constructor(
     public readonly stepName: string,
     public readonly relatedEntity: string,

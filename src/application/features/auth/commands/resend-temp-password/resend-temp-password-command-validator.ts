@@ -9,7 +9,7 @@ export class ResendTempPasswordCommandValidator extends AbstractValidator<Resend
     request: ResendTempPasswordCommand
   ): ValidationResultType<ResendTempPasswordCommand> {
     const schema = joi.object<ResendTempPasswordCommand>({
-      tenantId: joi.string().required(),
+      tenant: joi.any(),
       email: emailRule.required()
     });
 

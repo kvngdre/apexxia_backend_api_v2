@@ -1,7 +1,8 @@
 import { HydratedDocument, Model, Schema, Types } from "mongoose";
 import { Entity } from "@shared-kernel/entity";
 import { LenderStatus } from "./lender-status-enum";
-import { OnboardingProcessEntity } from "@domain/onboarding-process";
+import { OnboardingProcess } from "@domain/user/onboarding-process";
+// import { Tenant } from "@domain/tenant";
 
 export class Lender extends Entity {
   public static readonly collectionName: string = "Lender";
@@ -34,15 +35,15 @@ export class Lender extends Entity {
       //   default: null
       // },
 
-      isVerified: {
-        type: Boolean,
-        default: false
-      },
-
       status: {
         type: String,
         enum: LenderStatus,
         default: LenderStatus.NEW
+      },
+
+      isVerified: {
+        type: Boolean,
+        default: false
       },
 
       verificationReason: {
@@ -52,12 +53,6 @@ export class Lender extends Entity {
 
       logo: {
         type: String,
-        default: null
-      },
-
-      onboardingProcessId: {
-        type: Schema.Types.ObjectId,
-        ref: OnboardingProcessEntity.collectionName,
         default: null
       }
 
@@ -137,9 +132,8 @@ export class Lender extends Entity {
   public cacNumber: string | null = null;
   public isVerified: boolean = false;
   public verificationReason: string | null = null;
-  public onboardingProcessId: Types.ObjectId | null = null;
-  public onboardingProcess: unknown = {};
   public logo: string | null = null;
+  // public tenant?: Tenant;
   public _doc: Lender;
 }
 

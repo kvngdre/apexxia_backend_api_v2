@@ -1,29 +1,36 @@
 import { User } from "@domain/user/user-entity";
 import { Tenant } from "@domain/tenant";
+import { OnboardingProcessStatus } from "@domain/user/onboarding-process";
 
 export class AuthenticationResponseDto {
   private constructor(
-    public readonly id: string,
     public readonly tenantId: string,
+    public readonly subdomain: string,
     public readonly lenderId: string,
-    public readonly baseUrl: string,
+    public readonly userId: string,
     public readonly displayName: string,
     public readonly email: string,
-    public readonly isEmailVerified: boolean,
     // public readonly role: string,
-    public readonly token?: string
+    public readonly status: string,
+    public readonly isOnboardingComplete: boolean,
+    public readonly onboardingStatus: OnboardingProcessStatus,
+    public readonly onboardingStep: number,
+    public readonly accessToken?: string
   ) {}
 
-  public static from(user: User, tenant?: Tenant, token?: string) {
+  public static from(user: User, tenant: Tenant, token?: string) {
     return new AuthenticationResponseDto(
-      user.id,
-      tenant!._id!.toString(),
+      tenant._id!.toString(),
+      tenant!.subdomain.concat(".localhost:4048/api/v1"),
       user.lenderId.toString(),
-      "http://".concat(tenant!.subdomain).concat(".localhost:4048/api/v1"),
+      user._id.toString(),
       user.displayName,
       user.email,
-      user.isEmailVerified,
       //   user.role,
+      user.status,
+      user.onboardingProcess.isComplete,
+      user.onboardingProcess.status,
+      user.onboardingProcess.currentStep,
       token
     );
   }

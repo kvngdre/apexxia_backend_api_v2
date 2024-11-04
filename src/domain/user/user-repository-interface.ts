@@ -5,7 +5,8 @@ export interface IUserRepository {
   findById(tenantId: Types.ObjectId | string, userId: string): Promise<HydratedUserDocument | null>;
   findByEmail(
     tenantId: Types.ObjectId | string,
-    email: string
+    email: string,
+    options?: { session?: ClientSession }
   ): Promise<HydratedUserDocument | null>;
   find(tenantId: Types.ObjectId | string): Promise<HydratedUserDocument[]>;
   insert(

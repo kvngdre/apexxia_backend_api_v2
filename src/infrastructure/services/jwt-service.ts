@@ -16,7 +16,10 @@ export class JwtService implements IJwtService {
     }
   }
 
-  public readonly generateToken = (payload: JwtPayload, options: IJwtServiceOptions = {}) => {
+  public readonly generateToken = (
+    payload: JwtPayload,
+    options: IJwtServiceOptions = {}
+  ): { token: string; expiresAt: number } => {
     const signingOptions: SignOptions = Object.assign(
       {
         issuer: this._issuer,
@@ -28,7 +31,10 @@ export class JwtService implements IJwtService {
 
     const secretKey = options.secret ? options.secret : this._secreteKey;
 
-    return sign(payload, secretKey, signingOptions);
+    return {
+      token: sign(payload, secretKey, signingOptions),
+      expiresAt: Date.now() + Number(this._tokenExpirationTimeInMilliseconds)
+    };
   };
 
   public readonly decodeToken = (

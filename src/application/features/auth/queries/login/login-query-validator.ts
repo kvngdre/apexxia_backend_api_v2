@@ -1,20 +1,15 @@
 import { singleton } from "tsyringe";
 import joi from "joi";
 import { LoginQuery } from "./login-query";
-import {
-  AbstractValidator,
-  emailRule,
-  idRule,
-  ValidationResultType
-} from "@shared-kernel/validation";
+import { AbstractValidator, emailRule, ValidationResultType } from "@shared-kernel/validation";
 
 @singleton()
 export class LoginQueryValidator extends AbstractValidator<LoginQuery> {
   public validate(request: LoginQuery): ValidationResultType<LoginQuery> {
     const schema = joi.object<LoginQuery>({
-      tenantId: idRule.label("Tenant id").required(),
+      tenant: joi.any(),
       email: emailRule.required(),
-      password: joi.string().max(256)
+      password: joi.string().max(256).required()
     });
 
     const result = schema.validate(request);

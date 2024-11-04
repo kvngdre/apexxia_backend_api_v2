@@ -1,7 +1,8 @@
 import joi from "joi";
-import { joiPasswordExtendCore } from "joi-password";
+import { JoiPasswordExtend, joiPasswordExtendCore } from "joi-password";
+import { OnboardingProcessStatus } from "@domain/user/onboarding-process";
 
-export const extendedJoi = joi.extend(joiPasswordExtendCore);
+export const extendedJoi: JoiPasswordExtend = joi.extend(joiPasswordExtendCore);
 
 // ========================= RULES ====================================
 export const emailRule = joi.string().label("Email").email().lowercase().trim().messages({
@@ -14,6 +15,22 @@ export const idRule = joi
   .pattern(/^[0-9a-fA-F]{24}$/)
   .messages({
     "string.pattern.base": "{#label} is not valid"
+  });
+
+export const lenderNameRule = joi
+  .string()
+  .label("Lender name")
+  .trim()
+  .min(1)
+  .max(63)
+  .pattern(/^[a-zA-Z0-9,\s]+(-[a-zA-Z0-9,\s]+)*$/)
+  .messages({
+    // "string.base": "{#label} should be a text",
+    "string.empty": "{#label} cannot be empty",
+    "string.min": "{#label} is too short",
+    "string.max": "{#label} is too long",
+    "string.pattern.base":
+      "{#label} is invalid. {#label} can only contain alphanumeric characters and hyphens (not consecutively, nor at the start or end)"
   });
 
 export const nameRule = joi
@@ -31,6 +48,8 @@ export const nameRule = joi
     "string.pattern.base":
       "{#label} is invalid. {#label} can only contain alphanumeric characters and hyphens (not consecutively, nor at the start or end)"
   });
+
+export const onb = joi.string<OnboardingProcessStatus>().trim();
 
 export const personNameRule = joi
   .string()

@@ -1,6 +1,9 @@
 import { HydratedDocument, Model, Schema, Types } from "mongoose";
 import { Entity } from "@shared-kernel/entity";
+import { UserStatus } from "./user-status-enum";
+import { OnboardingProcess, OnboardingProcessStatus } from "@domain/user/onboarding-process";
 import { Lender } from "@domain/lender";
+// import { UserRole } from "./user-role-enum";
 
 export class User extends Entity {
   public static readonly collectionName: string = "User";
@@ -64,18 +67,69 @@ export class User extends Entity {
       isTemporaryPassword: {
         type: Boolean,
         default: true
+      },
+
+      // role: {
+      //   type: [String],
+      //   required: true
+      // }
+
+      status: {
+        type: String,
+        enum: UserStatus,
+        default: UserStatus.NEW
+      },
+
+      onboardingProcess: {
+        type: {
+          status: {
+            type: String,
+            enum: OnboardingProcessStatus,
+            default: OnboardingProcessStatus.NOT_STARTED
+          },
+
+          isComplete: { type: Boolean, default: false },
+
+          currentStep: { type: Number, default: 0 },
+
+          steps: {
+            type: [
+              {
+                name: { type: String, required: true },
+                relatedEntity: { type: String, required: true },
+                requiredFields: { type: [String] },
+                data: {
+                  type: Schema.Types.Mixed,
+                  default: function (this: OnboardingProcess) {
+                    return {};
+                  }
+                },
+                isComplete: { type: Boolean, default: false },
+                status: {
+                  type: String,
+                  enum: OnboardingProcessStatus,
+                  default: OnboardingProcessStatus.NOT_STARTED
+                },
+                startDateTime: { type: Date, default: null },
+                completeDateTime: { type: Date, default: null }
+              }
+            ],
+            default: function () {
+              return [];
+            }
+          },
+
+          startDateTime: {
+            type: Date,
+            default: null
+          },
+
+          completedDateTime: {
+            type: Date,
+            default: null
+          }
+        }
       }
-
-      //   role: {
-      //     type: Schema.Types.ObjectId,
-      //     ref: "Role",
-      //     required: true,
-      //   },
-
-      //   status: {
-      //     type: String,
-      //     default: userStatus.PENDING
-      //   },
     },
     { timestamps: true }
   );
@@ -86,16 +140,20 @@ export class User extends Entity {
     public lastName: string,
     public email: string,
     public hashedPassword: string
+    // public roles: UserRole[]
   ) {
     super();
     this.displayName = `${this.firstName} ${this.lastName}`;
   }
 
   public isTemporaryPassword: boolean = true;
-  public avatar: string = "";
+  public avatar: string = "http://random.img";
   public jobTitle: string | null = null;
   public isEmailVerified: boolean = false;
   public displayName: string;
+  public status: UserStatus = UserStatus.NEW;
+  public lender?: Lender;
+  public onboardingProcess: OnboardingProcess;
   public _doc: User;
 }
 

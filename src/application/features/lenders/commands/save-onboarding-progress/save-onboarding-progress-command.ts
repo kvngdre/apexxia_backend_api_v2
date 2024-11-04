@@ -1,10 +1,11 @@
-import { IOnboardingStep } from "@domain/onboarding-process";
+import { Tenant } from "@domain/tenant";
 import { IRequest } from "@infrastructure/mediator";
 
 export class SaveOnboardingProgressCommand implements IRequest {
   constructor(
-    public readonly tenantId: string,
-    public readonly lenderId: string,
-    public readonly onboardingSteps: IOnboardingStep[]
+    public readonly tenant: Tenant,
+    public readonly userId: string,
+    public readonly step: number,
+    public readonly data: unknown
   ) {}
 }

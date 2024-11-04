@@ -10,11 +10,17 @@ import { DateTimeProvider } from "./time";
 import { IMediator } from "./mediator/mediator-interface";
 import { ConnectionManager, CentralDbContext } from "./database";
 import { JwtService, RedisService } from "./services";
-import { LenderRepository, TenantRepository, UserRepository } from "./repositories";
+import {
+  LenderRepository,
+  SessionRepository,
+  TenantRepository,
+  UserRepository
+} from "./repositories";
 import { ITenantRepository } from "@domain/tenant";
 import { ILenderRepository } from "@domain/lender";
 import { IUserRepository } from "@domain/user";
 import { IJwtService } from "@application/abstractions/services";
+import { ISessionRepository } from "@domain/session";
 
 export function registerInfrastructureServices() {
   container.registerSingleton<ILogger>("Logger", Logger);
@@ -29,6 +35,7 @@ export function registerInfrastructureServices() {
   container.register<ITenantRepository>("TenantRepository", TenantRepository);
   container.register<ILenderRepository>("LenderRepository", LenderRepository);
   container.register<IUserRepository>("UserRepository", UserRepository);
+  container.register<ISessionRepository>("SessionRepository", SessionRepository);
 
   // container.registerSingleton("NotificationPublisher", NotificationPublisher);
   // container.registerSingleton("DeadLetterQueueConsumer", DeadLetterQueueConsumer);

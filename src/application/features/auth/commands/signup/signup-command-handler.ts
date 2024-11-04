@@ -8,6 +8,8 @@ import { ApplicationDbContext } from "@infrastructure/database";
 import { ILenderRepository, Lender } from "@domain/lender";
 import { IUserRepository, User } from "@domain/user";
 import { SignupCommandValidator } from "./signup-command-validator";
+import { OnboardingProcess, OnboardingStep } from "@domain/user/onboarding-process";
+import { Address } from "@domain/address";
 
 @scoped(Lifecycle.ResolutionScoped)
 export class SignupCommandHandler
@@ -24,10 +26,7 @@ export class SignupCommandHandler
   public async handle(command: SignupCommand): Promise<ResultType<AuthenticationResponseDto>> {
     // Validating command...
     const { isFailure, exception, value } = this._validator.validate(command);
-
-    if (isFailure) {
-      return Result.failure(exception);
-    }
+    if (isFailure) return Result.failure(exception);
 
     // Ensure tenant is unique
     if (!(await this._tenantRepository.isEmailUnique(value.email))) {
@@ -61,22 +60,33 @@ export class SignupCommandHandler
       value.email,
       Encryption.encryptText(temporaryPassword)
     );
-
-    // send verification email or raise event
-    console.log("Your temporary password is: " + temporaryPassword);
+    user.onboardingProcess = new OnboardingProcess([
+      new OnboardingStep("Update lender information", Lender.collectionName, ["cacNumber"]),
+      new OnboardingStep("Create lender address", Address.collectionName, [
+        "addressLine1",
+        "city",
+        "state",
+        "latitude",
+        "longitude"
+      ])
+    ]);
 
     // save
     const session = await this._appDbContext.startTransactionSession(tenant._id.toString());
 
     try {
       await session.withTransaction(async () => {
-        // await this._tenantRepository.insert(tenant, { session });
         await this._lenderRepository.insert(tenant.id, lender, { session });
         await this._userRepository.insert(tenant.id, user, { session });
+
+        // send verification email or raise event
+        console.log("Your temporary password is: " + temporaryPassword);
       });
     } finally {
       await session.endSession();
     }
+
+    // TODO: raise signup domain event...
 
     // return
     return Result.success(

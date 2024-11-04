@@ -19,7 +19,7 @@ export class ConnectionManager {
 
     // Event listeners for logging
     newConnection.on("connected", () =>
-      this._logger.logInfo(`Connected to database for tenant ${tenantId}`)
+      this._logger.logInfo(`Connected to database for tenant ${tenantId}.`)
     );
     newConnection.on("disconnected", () =>
       this._logger.logInfo(`Disconnected from database for tenant ${tenantId}`)

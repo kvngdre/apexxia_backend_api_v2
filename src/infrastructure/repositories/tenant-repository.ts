@@ -32,7 +32,7 @@ export class TenantRepository implements ITenantRepository {
     changes: Partial<Tenant> = {},
     options?: { session: ClientSession }
   ): Promise<HydratedTenantDocument> {
-    return tenant.updateOne(Object.assign({ ...tenant, _id: undefined }, changes), {
+    return tenant.updateOne(Object.assign({ ...tenant._doc, _id: undefined }, changes), {
       new: true,
       session: options?.session
     });

@@ -6,13 +6,15 @@ import { CentralDbContext } from "./central-db-context";
 import { Lender, LenderModel } from "@domain/lender";
 import { User, UserModel } from "@domain/user";
 import { Address, AddressModel } from "@domain/address";
+import { Session, SessionModel } from "@domain/session";
 
 @singleton()
 export class ApplicationDbContext {
   private readonly _entities: (typeof Entity)[] = [
     Lender,
     Address,
-    User
+    User,
+    Session
   ] as unknown as (typeof Entity)[];
 
   constructor(
@@ -58,6 +60,11 @@ export class ApplicationDbContext {
   public async lenders(tenantId: string) {
     const connection = await this.getTenantDBConnection(tenantId);
     return connection.model<Lender, LenderModel>(Lender.collectionName, Lender.schema);
+  }
+
+  public async sessions(tenantId: string) {
+    const connection = await this.getTenantDBConnection(tenantId);
+    return connection.model<Session, SessionModel>(Session.collectionName, Session.schema);
   }
 
   public async users(tenantId: string) {

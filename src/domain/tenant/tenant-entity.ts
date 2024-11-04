@@ -28,7 +28,7 @@ export class Tenant extends Entity {
         required: true
       },
 
-      signupDate: {
+      signupDateTime: {
         type: Date,
         default: new Date()
       }
@@ -45,7 +45,7 @@ export class Tenant extends Entity {
     super();
   }
 
-  public signupDate: Date = new Date();
+  public signupDateTime: Date = new Date();
   public _doc: Tenant;
 }
 

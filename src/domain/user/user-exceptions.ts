@@ -25,6 +25,6 @@ export class UserExceptions {
 
   public static readonly TemporaryPassword = Exception.Unauthorized(
     "User.TemporaryPassword",
-    "Your password is temporary. A password reset is required to continue."
+    "Password reset is required to continue."
   );
 }

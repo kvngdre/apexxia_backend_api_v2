@@ -38,13 +38,6 @@ export abstract class AbstractValidator<TRequest extends object> {
 
     return formattedMessage;
   }
-
-  private _formatCode(code: string) {
-    let codeParts: string[] = code.replace(/_/g, " ").split(" ");
-    codeParts = codeParts.map((p) => p.charAt(0).toUpperCase() + p.slice(1));
-
-    return "Validation.".concat(codeParts.join(""));
-  }
 }
 
 export type ValidationResultType<T> = IValidationSuccess<T> | IValidationFailure;

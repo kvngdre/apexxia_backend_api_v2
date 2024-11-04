@@ -6,6 +6,12 @@ export class Address extends Entity {
 
   public static readonly schema = new Schema<Address, AddressModel, IAddressMethods>(
     {
+      // * A custom label or name for the address.
+      label: {
+        type: String,
+        default: null
+      },
+
       // The first line of the street address (e.g., "123 Main Street").
       addressLine1: {
         type: String,
@@ -40,12 +46,6 @@ export class Address extends Entity {
         }
       },
 
-      // * A custom label or name for the address.
-      label: {
-        type: String,
-        default: null
-      },
-
       latitude: {
         type: Number,
         required: true
@@ -69,9 +69,9 @@ export class Address extends Entity {
     super();
   }
 
+  public label: string | null = null;
   public addressLine2: string | null = null;
   public fullAddress: string;
-  public label: string | null = null;
   public country: string = "Nigeria";
   public _doc: Address;
 }

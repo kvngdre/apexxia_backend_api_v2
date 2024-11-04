@@ -11,7 +11,11 @@ export class UserRepository implements IUserRepository {
     return (await this._dbContext.users(tenantId)).findById(userId);
   }
 
-  public async findByEmail(tenantId: string, email: string): Promise<HydratedUserDocument | null> {
+  public async findByEmail(
+    tenantId: string,
+    email: string,
+    options?: { session?: ClientSession }
+  ): Promise<HydratedUserDocument | null> {
     return (await this._dbContext.users(tenantId)).findOne({ email });
   }
 

@@ -21,7 +21,7 @@ export class ResendTempPasswordCommandHandler
       return Result.failure(exception);
     }
 
-    const user = await this._userRepository.findByEmail(value.tenantId, value.email);
+    const user = await this._userRepository.findByEmail(value.tenant.id, value.email);
     if (!user) {
       return Result.failure(UserExceptions.NotFound);
     }
