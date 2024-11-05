@@ -8,7 +8,7 @@ import { AuthenticationExceptions } from "@application/features/auth/shared";
 import { ApiResponse, HttpStatus } from "@web/web-infrastructure";
 
 @injectable()
-export class AuthenticationMiddleware extends AbstractMiddleware {
+export class AuthenticateUserMiddleware extends AbstractMiddleware {
   private readonly _jwtService: IJwtService;
   private readonly _userRepository: IUserRepository;
   private readonly _sessionRepository: ISessionRepository;

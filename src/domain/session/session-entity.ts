@@ -39,14 +39,14 @@ export class Session extends Entity {
   constructor(
     public userId: Types.ObjectId,
     public hashedToken: string,
-    public expiresAt: Date
+    public expiresAt: Date,
+    public lastLoginDateTime: Date | null = new Date()
   ) {
     super();
   }
 
-  public lastLoginDateTime: Date | null = new Date();
   public user?: User;
-  public _doc: Session = this;
+  public _doc: Session;
 }
 
 Session.schema.methods.isExpired = function () {

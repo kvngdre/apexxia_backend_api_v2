@@ -50,7 +50,7 @@ export class SessionRepository implements ISessionRepository {
   ) {
     return (await this._dbContext.sessions(tenantId)).findOneAndUpdate(
       { userId: session.userId },
-      Object.assign({ ...session._doc, _id: undefined }, changes),
+      Object.assign({ ...session, _id: undefined }, changes),
       {
         upsert: true,
         new: true,

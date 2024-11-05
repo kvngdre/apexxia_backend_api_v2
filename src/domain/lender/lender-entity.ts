@@ -1,7 +1,7 @@
 import { HydratedDocument, Model, Schema, Types } from "mongoose";
 import { Entity } from "@shared-kernel/entity";
 import { LenderStatus } from "./lender-status-enum";
-import { OnboardingProcess } from "@domain/user/onboarding-process";
+import { Address } from "@domain/address";
 // import { Tenant } from "@domain/tenant";
 
 export class Lender extends Entity {
@@ -39,11 +39,6 @@ export class Lender extends Entity {
         type: String,
         enum: LenderStatus,
         default: LenderStatus.NEW
-      },
-
-      isVerified: {
-        type: Boolean,
-        default: false
       },
 
       verificationReason: {
@@ -133,7 +128,7 @@ export class Lender extends Entity {
   public isVerified: boolean = false;
   public verificationReason: string | null = null;
   public logo: string | null = null;
-  // public tenant?: Tenant;
+  public address?: Address;
   public _doc: Lender;
 }
 

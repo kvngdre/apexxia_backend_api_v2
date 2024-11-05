@@ -49,9 +49,13 @@ export class LoginQueryHandler implements IRequestHandler<LoginQuery, Authentica
       lenderId: user.lenderId.toString()
     });
 
-    const session = new Session(user.id, Encryption.encryptText(token), new Date(expiresAt));
-
-    await this._sessionRepository.upsertOnUserId(session);
+    const session = new Session(
+      user.id,
+      Encryption.encryptText(token),
+      new Date(expiresAt),
+      new Date()
+    );
+    await this._sessionRepository.upsertByUserId(value.tenant.id, session);
 
     // TODO: Raise login domain event
 

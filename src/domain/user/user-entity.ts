@@ -1,7 +1,6 @@
 import { HydratedDocument, Model, Schema, Types } from "mongoose";
 import { Entity } from "@shared-kernel/entity";
 import { UserStatus } from "./user-status-enum";
-import { OnboardingProcess, OnboardingProcessStatus } from "@domain/user/onboarding-process";
 import { Lender } from "@domain/lender";
 // import { UserRole } from "./user-role-enum";
 
@@ -78,57 +77,6 @@ export class User extends Entity {
         type: String,
         enum: UserStatus,
         default: UserStatus.NEW
-      },
-
-      onboardingProcess: {
-        type: {
-          status: {
-            type: String,
-            enum: OnboardingProcessStatus,
-            default: OnboardingProcessStatus.NOT_STARTED
-          },
-
-          isComplete: { type: Boolean, default: false },
-
-          currentStep: { type: Number, default: 0 },
-
-          steps: {
-            type: [
-              {
-                name: { type: String, required: true },
-                relatedEntity: { type: String, required: true },
-                requiredFields: { type: [String] },
-                data: {
-                  type: Schema.Types.Mixed,
-                  default: function (this: OnboardingProcess) {
-                    return {};
-                  }
-                },
-                isComplete: { type: Boolean, default: false },
-                status: {
-                  type: String,
-                  enum: OnboardingProcessStatus,
-                  default: OnboardingProcessStatus.NOT_STARTED
-                },
-                startDateTime: { type: Date, default: null },
-                completeDateTime: { type: Date, default: null }
-              }
-            ],
-            default: function () {
-              return [];
-            }
-          },
-
-          startDateTime: {
-            type: Date,
-            default: null
-          },
-
-          completedDateTime: {
-            type: Date,
-            default: null
-          }
-        }
       }
     },
     { timestamps: true }
@@ -144,6 +92,7 @@ export class User extends Entity {
   ) {
     super();
     this.displayName = `${this.firstName} ${this.lastName}`;
+    this.fullName = `${this.firstName} ${this.lastName}`;
   }
 
   public isTemporaryPassword: boolean = true;
@@ -151,9 +100,9 @@ export class User extends Entity {
   public jobTitle: string | null = null;
   public isEmailVerified: boolean = false;
   public displayName: string;
+  public fullName: string;
   public status: UserStatus = UserStatus.NEW;
   public lender?: Lender;
-  public onboardingProcess: OnboardingProcess;
   public _doc: User;
 }
 

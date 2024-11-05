@@ -9,6 +9,8 @@ import {
   ResetPasswordCommandHandler,
   ResetPasswordCommandValidator
 } from "./features/auth/commands/reset-password";
+import { GetAuthenticatedUserQueryHandler } from "./features/users/queries/get-authenticated-user";
+import { GetLenderByIdQueryHandler } from "./features/lenders/queries/get-lender-by-id";
 
 export function registerApplicationServices() {
   container.registerSingleton(SignupCommandValidator);
@@ -28,6 +30,14 @@ export function registerApplicationServices() {
 
   container.registerSingleton(ResetPasswordCommandValidator);
   container.register("ResetPasswordCommandHandler", ResetPasswordCommandHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.register("GetAuthenticatedUserQueryHandler", GetAuthenticatedUserQueryHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.register("GetAuthenticatedUserQueryHandler", GetLenderByIdQueryHandler, {
     lifecycle: Lifecycle.ResolutionScoped
   });
 }
