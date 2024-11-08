@@ -83,7 +83,7 @@ export class User extends Entity {
   );
 
   constructor(
-    public lenderId: Types.ObjectId,
+    public lenderId: Types.ObjectId | string,
     public firstName: string,
     public lastName: string,
     public email: string,

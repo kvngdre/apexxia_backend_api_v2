@@ -23,6 +23,12 @@ import {
 } from "./features/loan-products/commands/update-loan-product";
 import { DeleteLoanProductCommandHandler } from "./features/loan-products/commands/delete-loan-product";
 import { GetLenderByIdQueryHandler } from "./features/lenders/queries/get-by-id";
+import { GetUsersQueryHandler } from "./features/users/queries/get-users";
+import { GetUserByIdQueryHandler } from "./features/users/queries/get-user-by-id";
+import {
+  CreateUserCommandHandler,
+  CreateUserCommandValidator
+} from "./features/users/commands/create-user";
 
 export function registerApplicationServices() {
   container.registerSingleton(SignupCommandValidator);
@@ -76,6 +82,19 @@ export function registerApplicationServices() {
   });
 
   container.register("GetSessionsQueryHandler", GetSessionsQueryHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.register("GetUsersQueryHandler", GetUsersQueryHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.register("GetUserByIdQueryHandler", GetUserByIdQueryHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.registerSingleton(CreateUserCommandValidator);
+  container.register("CreateUserCommandHandler", CreateUserCommandHandler, {
     lifecycle: Lifecycle.ResolutionScoped
   });
 }
