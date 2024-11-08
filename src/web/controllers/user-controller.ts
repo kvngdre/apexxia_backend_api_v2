@@ -1,7 +1,7 @@
 import { type Request, type Response } from "express";
 import { Lifecycle, scoped } from "tsyringe";
 import { BaseController } from "./base-controller";
-import { SaveOnboardingProgressCommand } from "@application/features/lenders/commands/save-onboarding-progress/save-onboarding-progress-command";
+// import { SaveOnboardingProgressCommand } from "@application/features/lenders/commands/save-onboarding-progress/save-onboarding-progress-command";
 import { GetAuthenticatedUserQuery } from "@application/features/users/queries/get-authenticated-user";
 
 @scoped(Lifecycle.ResolutionScoped)

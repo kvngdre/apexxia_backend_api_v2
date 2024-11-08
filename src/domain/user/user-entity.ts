@@ -87,7 +87,8 @@ export class User extends Entity {
     public firstName: string,
     public lastName: string,
     public email: string,
-    public hashedPassword: string
+    public hashedPassword: string,
+    public status: UserStatus = UserStatus.NEW
     // public roles: UserRole[]
   ) {
     super();
@@ -101,7 +102,6 @@ export class User extends Entity {
   public isEmailVerified: boolean = false;
   public displayName: string;
   public fullName: string;
-  public status: UserStatus = UserStatus.NEW;
   public lender?: Lender;
   public _doc: User;
 }

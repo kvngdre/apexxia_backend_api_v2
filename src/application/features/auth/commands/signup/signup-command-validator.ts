@@ -4,7 +4,7 @@ import {
   AbstractValidator,
   emailRule,
   lenderNameRule,
-  nameRule,
+  subdomainRule,
   personNameRule,
   ValidationResultType
 } from "@shared-kernel/validation";
@@ -15,7 +15,7 @@ export class SignupCommandValidator extends AbstractValidator<SignupCommand> {
   public validate(request: SignupCommand): ValidationResultType<SignupCommand> {
     const schema = joi.object<SignupCommand>({
       lenderName: lenderNameRule.required(),
-      subdomain: nameRule.label("Subdomain").required(),
+      subdomain: subdomainRule.required(),
       firstName: personNameRule.label("First name").required(),
       lastName: personNameRule.label("Last name").required(),
       email: emailRule.required()

@@ -10,7 +10,19 @@ import {
   ResetPasswordCommandValidator
 } from "./features/auth/commands/reset-password";
 import { GetAuthenticatedUserQueryHandler } from "./features/users/queries/get-authenticated-user";
-import { GetLenderByIdQueryHandler } from "./features/lenders/queries/get-lender-by-id";
+import {
+  CreateLoanProductCommandHandler,
+  CreateLoanProductCommandValidator
+} from "./features/loan-products/commands/create-loan-product";
+import { GetSessionsQueryHandler } from "./features/sessions/queries/get-sessions";
+import { GetLoanProductsQueryHandler } from "./features/loan-products/queries/get-loan-products";
+import { GetLoanProductByIdQueryHandler } from "./features/loan-products/queries/get-by-id";
+import {
+  UpdateLoanProductCommandHandler,
+  UpdateLoanProductCommandValidator
+} from "./features/loan-products/commands/update-loan-product";
+import { DeleteLoanProductCommandHandler } from "./features/loan-products/commands/delete-loan-product";
+import { GetLenderByIdQueryHandler } from "./features/lenders/queries/get-by-id";
 
 export function registerApplicationServices() {
   container.registerSingleton(SignupCommandValidator);
@@ -33,11 +45,37 @@ export function registerApplicationServices() {
     lifecycle: Lifecycle.ResolutionScoped
   });
 
+  container.register("GetLenderByIdQueryHandler", GetLenderByIdQueryHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
   container.register("GetAuthenticatedUserQueryHandler", GetAuthenticatedUserQueryHandler, {
     lifecycle: Lifecycle.ResolutionScoped
   });
 
-  container.register("GetAuthenticatedUserQueryHandler", GetLenderByIdQueryHandler, {
+  container.registerSingleton(CreateLoanProductCommandValidator);
+  container.register("CreateLoanProductCommandHandler", CreateLoanProductCommandHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.registerSingleton(UpdateLoanProductCommandValidator);
+  container.register("UpdateLoanProductCommandHandler", UpdateLoanProductCommandHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.register("DeleteLoanProductCommandHandler", DeleteLoanProductCommandHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.register("GetLoanProductsQueryHandler", GetLoanProductsQueryHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.register("GetLoanProductByIdQueryHandler", GetLoanProductByIdQueryHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.register("GetSessionsQueryHandler", GetSessionsQueryHandler, {
     lifecycle: Lifecycle.ResolutionScoped
   });
 }

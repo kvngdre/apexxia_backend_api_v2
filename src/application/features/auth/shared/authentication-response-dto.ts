@@ -1,6 +1,5 @@
 import { User } from "@domain/user/user-entity";
 import { Tenant } from "@domain/tenant";
-import { OnboardingProcessStatus } from "@domain/user/onboarding-process";
 
 export class AuthenticationResponseDto {
   private constructor(
@@ -12,9 +11,6 @@ export class AuthenticationResponseDto {
     public readonly email: string,
     // public readonly role: string,
     public readonly status: string,
-    public readonly isOnboardingComplete: boolean,
-    public readonly onboardingStatus: OnboardingProcessStatus,
-    public readonly onboardingStep: number,
     public readonly accessToken?: string
   ) {}
 
@@ -28,9 +24,6 @@ export class AuthenticationResponseDto {
       user.email,
       //   user.role,
       user.status,
-      user.onboardingProcess.isComplete,
-      user.onboardingProcess.status,
-      user.onboardingProcess.currentStep,
       token
     );
   }

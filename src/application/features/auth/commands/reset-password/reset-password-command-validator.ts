@@ -12,7 +12,7 @@ import { ResetPasswordCommand } from "./reset-password-command";
 export class ResetPasswordCommandValidator extends AbstractValidator<ResetPasswordCommand> {
   public validate(request: ResetPasswordCommand): ValidationResultType<ResetPasswordCommand> {
     const schema = joi.object<ResetPasswordCommand>({
-      tenant: joi.any(),
+      tenant: joi.any().required(),
       email: emailRule.required(),
       tempPassword: joi.string().label("Temporary password").trim().max(256).required(),
       newPassword: passwordRule.label("New password").required(),

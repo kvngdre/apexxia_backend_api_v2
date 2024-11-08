@@ -14,8 +14,7 @@ export class UserResponseDto {
     public readonly email: string,
     public readonly isEmailVerified: boolean,
     public readonly status: UserStatus,
-    public readonly createdAt: Date,
-    public readonly updatedAt: Date
+    public readonly createdAt: Date
   ) {}
 
   public static from<T extends User | null>(user?: T): ResponseDtoType<T, UserResponseDto> {
@@ -35,8 +34,7 @@ export class UserResponseDto {
             user.isEmailVerified,
             user.status,
             // user.role,
-            user.createdAt,
-            user.updatedAt
+            user.createdAt
           )
     ) as ResponseDtoType<T, UserResponseDto>;
   }

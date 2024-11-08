@@ -14,7 +14,7 @@ export const idRule = joi
   .trim()
   .pattern(/^[0-9a-fA-F]{24}$/)
   .messages({
-    "string.pattern.base": "{#label} is not valid"
+    "string.pattern.base": "{#label} ID is not valid"
   });
 
 export const lenderNameRule = joi
@@ -38,8 +38,8 @@ export const nameRule = joi
   .label("Name")
   .trim()
   .min(1)
-  .max(63)
-  .pattern(/^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/)
+  .max(100)
+  .pattern(/^[a-zA-Z0-9]+([\s\-a-zA-Z0-9]+)*$/)
   .messages({
     // "string.base": "{#label} should be a text",
     "string.empty": "{#label} cannot be empty",
@@ -48,6 +48,8 @@ export const nameRule = joi
     "string.pattern.base":
       "{#label} is invalid. {#label} can only contain alphanumeric characters and hyphens (not consecutively, nor at the start or end)"
   });
+
+export const numberRule = joi.number().min(0);
 
 export const onb = joi.string<OnboardingProcessStatus>().trim();
 
@@ -84,4 +86,20 @@ export const passwordRule = extendedJoi
     "password.minOfSpecialCharacters": "{#label} should contain at least {#min} special characters",
     "password.minOfNumeric": "{#label} should contain at least {#min} numbers",
     "password.noWhiteSpaces": "{#label} cannot contain white spaces"
+  });
+
+export const subdomainRule = joi
+  .string()
+  .label("subdomain")
+  .trim()
+  .min(1)
+  .max(63)
+  .pattern(/^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/)
+  .messages({
+    // "string.base": "{#label} should be a text",
+    "string.empty": "{#label} cannot be empty",
+    "string.min": "{#label} is too short",
+    "string.max": "{#label} is too long",
+    "string.pattern.base":
+      "{#label} is invalid. {#label} can only contain alphanumeric characters and hyphens (not consecutively, nor at the start or end)"
   });

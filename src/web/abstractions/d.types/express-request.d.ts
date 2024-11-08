@@ -5,7 +5,6 @@ declare global {
   namespace Express {
     export interface Request {
       authenticatedUser?: HydratedUserDocument;
-      tenantId?: string;
       tenant?: Tenant;
     }
   }

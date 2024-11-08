@@ -5,6 +5,7 @@ import { SignupCommand } from "@application/features/auth/commands/signup";
 import { ResendTempPasswordCommand } from "@application/features/auth/commands/resend-temp-password";
 import { LoginQuery } from "@application/features/auth/queries/login";
 import { ResetPasswordCommand } from "@application/features/auth/commands/reset-password";
+import { HttpStatus } from "@web/web-infrastructure";
 
 @scoped(Lifecycle.ResolutionScoped)
 export class AuthController extends BaseController {
@@ -19,7 +20,7 @@ export class AuthController extends BaseController {
 
     const result = await this.sender.send(command);
 
-    const { code, payload } = this.buildHttpResponse(result, res);
+    const { code, payload } = this.buildHttpResponse(result, res, { code: HttpStatus.CREATED });
 
     res.status(code).json(payload);
   };

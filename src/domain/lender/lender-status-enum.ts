@@ -1,10 +1,10 @@
 export enum LenderStatus {
+  ACTIVE = "active",
+  BLOCKED = "blocked",
+  DEACTIVATED = "deactivated",
+  DOCUMENT_REVIEW = "document review",
   NEW = "new",
   ONBOARDING = "onboarding",
-  DOCUMENT_REVIEW = "document review",
   REJECTED = "rejected",
-  VERIFIED = "verified",
-  DEACTIVATED = "deactivated",
-  SUSPENDED = "suspended",
-  BLOCKED = "blocked"
+  SUSPENDED = "suspended"
 }

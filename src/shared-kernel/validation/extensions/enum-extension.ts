@@ -1,12 +1,12 @@
-import { ExtensionFactory } from "joi";
+import { ExtensionFactory, Root, StringSchema } from "joi";
 
-// export interface JoiStringExtend<T> extends StringSchema<T> {
-//   enum(enumType: object): AnySchema;
-// }
+export interface JoiStringExtend<T> extends StringSchema<T> {
+  enum(enumType: unknown): StringSchema;
+}
 
-// export interface JoiStringEnumExtend extends Root {
-//   string(): JoiStringExtend<string>;
-// }
+export interface JoiStringEnumExtend extends Root {
+  string<T = string>(): JoiStringExtend<T>;
+}
 
 // Define a custom Joi extension
 export const stringEnumExtension: ExtensionFactory = (joi) => ({
@@ -19,13 +19,9 @@ export const stringEnumExtension: ExtensionFactory = (joi) => ({
     enum: {
       method(enumType: object) {
         return this.$_addRule({
-          name: "nativeEnum",
+          name: "enum",
           args: { enumType }
         });
-
-        // return this.valid(...enumValues).message({
-        //   "string.enum": { values: enumValues.join(", ") }
-        // });
       },
       args: [
         {
@@ -35,7 +31,6 @@ export const stringEnumExtension: ExtensionFactory = (joi) => ({
         }
       ],
       validate: (value, helpers, { enumType = {} }) => {
-        // Extract enum values for Joi.valid()
         const enumValues = Object.values(enumType);
 
         if (!enumValues.includes(value)) {

@@ -35,6 +35,11 @@ export class Lender extends Entity {
       //   default: null
       // },
 
+      isVerified: {
+        type: Boolean,
+        default: false
+      },
+
       status: {
         type: String,
         enum: LenderStatus,
@@ -117,17 +122,17 @@ export class Lender extends Entity {
 
   constructor(
     public tenantId: Types.ObjectId,
-    public name: string
+    public name: string,
+    public status: LenderStatus = LenderStatus.NEW
   ) {
     super();
   }
 
   public addressId: Types.ObjectId | null = null;
-  public status: LenderStatus = LenderStatus.NEW;
   public cacNumber: string | null = null;
-  public isVerified: boolean = false;
   public verificationReason: string | null = null;
   public logo: string | null = null;
+  public isVerified: boolean = false;
   public address?: Address;
   public _doc: Lender;
 }

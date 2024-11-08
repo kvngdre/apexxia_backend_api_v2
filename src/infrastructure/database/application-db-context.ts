@@ -7,6 +7,7 @@ import { Lender, LenderModel } from "@domain/lender";
 import { User, UserModel } from "@domain/user";
 import { Address, AddressModel } from "@domain/address";
 import { Session, SessionModel } from "@domain/session";
+import { LoanProduct, LoanProductModel } from "@domain/loan-product";
 
 @singleton()
 export class ApplicationDbContext {
@@ -14,7 +15,8 @@ export class ApplicationDbContext {
     Lender,
     Address,
     User,
-    Session
+    Session,
+    LoanProduct
   ] as unknown as (typeof Entity)[];
 
   constructor(
@@ -60,6 +62,14 @@ export class ApplicationDbContext {
   public async lenders(tenantId: string) {
     const connection = await this.getTenantDBConnection(tenantId);
     return connection.model<Lender, LenderModel>(Lender.collectionName, Lender.schema);
+  }
+
+  public async loanProducts(tenantId: string) {
+    const connection = await this.getTenantDBConnection(tenantId);
+    return connection.model<LoanProduct, LoanProductModel>(
+      LoanProduct.collectionName,
+      LoanProduct.schema
+    );
   }
 
   public async sessions(tenantId: string) {

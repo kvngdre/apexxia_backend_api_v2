@@ -1,7 +1,7 @@
 import { type Request, type Response } from "express";
 import { Lifecycle, scoped } from "tsyringe";
 import { BaseController } from "./base-controller";
-import { GetLenderByIdQuery } from "@application/features/lenders/queries/get-lender-by-id";
+import { GetLenderByIdQuery } from "@application/features/lenders/queries/get-by-id";
 
 @scoped(Lifecycle.ResolutionScoped)
 export class LenderController extends BaseController {

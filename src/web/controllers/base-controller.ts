@@ -7,9 +7,13 @@ import { ISender, Mediator } from "@infrastructure/mediator";
 export abstract class BaseController {
   protected readonly sender: ISender = container.resolve(Mediator);
 
-  protected buildHttpResponse<TValue>(result: ResultType<TValue>, res: Response) {
+  protected buildHttpResponse<TValue>(
+    result: ResultType<TValue>,
+    res: Response,
+    options?: { code?: HttpStatus }
+  ) {
     const code = result.isSuccess
-      ? HttpStatus.OK
+      ? (options?.code as number) || HttpStatus.OK
       : HttpStatus.mapExceptionToHttpStatus(result.exception);
 
     const payload = result.isSuccess

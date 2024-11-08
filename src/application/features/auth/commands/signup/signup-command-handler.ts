@@ -5,11 +5,9 @@ import { AuthenticationResponseDto } from "../../shared/authentication-response-
 import { Result, ResultType, Encryption, Utils } from "@shared-kernel/index";
 import { ITenantRepository, Tenant, TenantExceptions } from "@domain/tenant";
 import { ApplicationDbContext } from "@infrastructure/database";
-import { ILenderRepository, Lender } from "@domain/lender";
-import { IUserRepository, User } from "@domain/user";
+import { ILenderRepository, Lender, LenderStatus } from "@domain/lender";
+import { IUserRepository, User, UserStatus } from "@domain/user";
 import { SignupCommandValidator } from "./signup-command-validator";
-import { OnboardingProcess, OnboardingStep } from "@domain/user/onboarding-process";
-import { Address } from "@domain/address";
 
 @scoped(Lifecycle.ResolutionScoped)
 export class SignupCommandHandler
@@ -49,7 +47,7 @@ export class SignupCommandHandler
     await this._tenantRepository.insert(tenant);
 
     // create lender
-    const lender = new Lender(tenant._id, value.lenderName);
+    const lender = new Lender(tenant._id, value.lenderName, LenderStatus.ONBOARDING);
 
     // create user
     const temporaryPassword = Utils.generateRandomPassword(8);
@@ -58,18 +56,9 @@ export class SignupCommandHandler
       value.firstName,
       value.lastName,
       value.email,
-      Encryption.encryptText(temporaryPassword)
+      Encryption.encryptText(temporaryPassword),
+      UserStatus.ONBOARDING
     );
-    user.onboardingProcess = new OnboardingProcess([
-      new OnboardingStep("Update lender information", Lender.collectionName, ["cacNumber"]),
-      new OnboardingStep("Create lender address", Address.collectionName, [
-        "addressLine1",
-        "city",
-        "state",
-        "latitude",
-        "longitude"
-      ])
-    ]);
 
     // save
     const session = await this._appDbContext.startTransactionSession(tenant._id.toString());

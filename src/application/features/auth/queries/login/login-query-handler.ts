@@ -33,15 +33,6 @@ export class LoginQueryHandler implements IRequestHandler<LoginQuery, Authentica
       return Result.failure(UserExceptions.TemporaryPassword);
     }
 
-    if (
-      user.status === UserStatus.NEW &&
-      user.onboardingProcess.steps.length > 0 &&
-      !user.onboardingProcess.isComplete
-    ) {
-      user.status = UserStatus.ONBOARDING;
-      await this._userRepository.update(user);
-    }
-
     const { token, expiresAt } = this._jwtService.generateToken({
       sub: user.id,
       id: user.id,
