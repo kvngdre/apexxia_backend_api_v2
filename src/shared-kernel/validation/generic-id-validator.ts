@@ -1,5 +1,5 @@
 import joi from "joi";
-import { idRule } from "./common-validation-rules";
+import { objectIdStringRule } from "./common-validation-rules";
 import { AbstractValidator, ValidationResultType } from "./abstract-validator";
 
 export class GenericIdValidator<T extends object> extends AbstractValidator<T> {
@@ -11,7 +11,7 @@ export class GenericIdValidator<T extends object> extends AbstractValidator<T> {
     const obj: Record<keyof T, joi.StringSchema> = {} as Record<keyof T, joi.StringSchema>;
 
     for (const key of this._keys) {
-      obj[key] = idRule;
+      obj[key] = objectIdStringRule;
     }
 
     const schema = joi.object(obj);

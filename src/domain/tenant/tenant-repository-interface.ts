@@ -11,7 +11,7 @@ export interface ITenantRepository {
     changes: Partial<Tenant>,
     options?: { session: ClientSession }
   ): Promise<HydratedTenantDocument>;
-  delete(tenant: HydratedTenantDocument): Promise<void>;
+  delete(tenant: HydratedTenantDocument, options?: { session: ClientSession }): Promise<void>;
   isEmailUnique(email: string): Promise<boolean>;
   isSubdomainUnique(subdomain: string): Promise<boolean>;
 }

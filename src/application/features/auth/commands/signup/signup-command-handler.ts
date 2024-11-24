@@ -51,6 +51,11 @@ export class SignupCommandHandler
 
     // create user
     const temporaryPassword = Utils.generateRandomPassword(8);
+
+    // console.log({ temporaryPassword });
+
+    // throw new Error("zdf");
+
     const user = new User(
       lender._id,
       value.firstName,

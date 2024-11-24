@@ -43,7 +43,10 @@ export class UserRepository implements IUserRepository {
     });
   }
 
-  public async delete(User: HydratedUserDocument): Promise<void> {
-    User.deleteOne();
+  public async delete(
+    user: HydratedUserDocument,
+    options?: { session: ClientSession }
+  ): Promise<void> {
+    await user.deleteOne({ session: options?.session });
   }
 }

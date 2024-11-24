@@ -2,16 +2,19 @@ import joi from "joi";
 import { singleton } from "tsyringe";
 import {
   AbstractValidator,
-  idRule,
+  objectIdStringRule,
   numberRule,
   ValidationResultType,
   nameRule
 } from "@shared-kernel/validation";
 import { CreateLoanProductCommand } from "./create-loan-product-command";
 import { FeeTypeEnum } from "@domain/loan-product";
-import { stringEnumExtension } from "@shared-kernel/validation/extensions/enum-extension";
+import {
+  JoiStringEnumExtend,
+  stringEnumExtension
+} from "@shared-kernel/validation/extensions/enum-extension";
 
-const extendedJoi = joi.extend(stringEnumExtension);
+const extendedJoi: JoiStringEnumExtend = joi.extend(stringEnumExtension);
 
 @singleton()
 export class CreateLoanProductCommandValidator extends AbstractValidator<CreateLoanProductCommand> {
@@ -20,7 +23,7 @@ export class CreateLoanProductCommandValidator extends AbstractValidator<CreateL
   ): ValidationResultType<CreateLoanProductCommand> {
     const schema = joi.object<CreateLoanProductCommand>({
       tenant: joi.any().required(),
-      lenderId: idRule.label("Lender").required(),
+      lenderId: objectIdStringRule.label("Lender").required(),
       name: nameRule.required(),
       minLoanAmount: numberRule.label("Minimum loan amount").required(),
       maxLoanAmount: numberRule

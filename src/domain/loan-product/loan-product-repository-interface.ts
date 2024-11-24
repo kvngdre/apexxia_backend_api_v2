@@ -17,6 +17,9 @@ export interface ILoanProductRepository {
     changes?: Partial<LoanProduct>,
     options?: { session: ClientSession }
   ): Promise<HydratedLoanProductDocument>;
-  delete(loanProduct: HydratedLoanProductDocument): Promise<void>;
+  delete(
+    loanProduct: HydratedLoanProductDocument,
+    options?: { session: ClientSession }
+  ): Promise<void>;
   isNameUnique(tenantId: string, name: string): Promise<boolean>;
 }

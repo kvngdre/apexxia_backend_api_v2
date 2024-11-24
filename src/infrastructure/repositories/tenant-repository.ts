@@ -38,8 +38,11 @@ export class TenantRepository implements ITenantRepository {
     });
   }
 
-  public async delete(tenant: HydratedTenantDocument): Promise<void> {
-    tenant.deleteOne();
+  public async delete(
+    tenant: HydratedTenantDocument,
+    options?: { session: ClientSession }
+  ): Promise<void> {
+    await tenant.deleteOne({ session: options?.session });
   }
 
   public async isEmailUnique(email: string): Promise<boolean> {

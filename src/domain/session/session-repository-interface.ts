@@ -31,6 +31,6 @@ export interface ISessionRepository {
     changes?: Partial<Session>,
     options?: { session: ClientSession }
   ): Promise<HydratedSessionDocument>;
-  delete(session: Session): Promise<void>;
+  delete(session: Session, options?: { session: ClientSession }): Promise<void>;
   isUserIdUnique(tenantId: Types.ObjectId | string, userId: string): Promise<boolean>;
 }

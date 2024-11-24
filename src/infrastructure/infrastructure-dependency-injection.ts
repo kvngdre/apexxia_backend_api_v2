@@ -3,14 +3,14 @@ import { Logger } from "./logging";
 import { ILogger } from "@application/abstractions/logging/logger-interface";
 import { ApplicationDbContext } from "./database/application-db-context";
 import { Mediator } from "./mediator";
-import { IDateTimeProvider } from "@shared-kernel/index.js";
-import { DateTimeProvider } from "./time";
 // import { NotificationPublisher } from "./publisher";
 // import { DeadLetterQueueConsumer } from "./consumer/dead-letter-queue-consumer";
 import { IMediator } from "./mediator/mediator-interface";
 import { ConnectionManager, CentralDbContext } from "./database";
 import { JwtService, RedisService } from "./services";
 import {
+  AddressRepository,
+  CustomerRepository,
   LenderRepository,
   LoanProductRepository,
   SessionRepository,
@@ -23,6 +23,8 @@ import { IUserRepository } from "@domain/user";
 import { IJwtService } from "@application/abstractions/services";
 import { ISessionRepository } from "@domain/session";
 import { ILoanProductRepository } from "@domain/loan-product";
+import { ICustomerRepository } from "@domain/customer";
+import { IAddressRepository } from "@domain/address";
 
 export function registerInfrastructureServices() {
   container.registerSingleton<ILogger>("Logger", Logger);
@@ -31,7 +33,6 @@ export function registerInfrastructureServices() {
   container.registerSingleton<ConnectionManager>("ConnectionManager", ConnectionManager);
   container.registerSingleton<RedisService>("RedisService", RedisService);
   container.registerSingleton<IMediator>("Mediator", Mediator);
-  container.registerSingleton<IDateTimeProvider>("DateTimeProvider", DateTimeProvider);
   container.registerSingleton<IJwtService>("JwtService", JwtService);
 
   container.register<ITenantRepository>("TenantRepository", TenantRepository);
@@ -39,6 +40,8 @@ export function registerInfrastructureServices() {
   container.register<IUserRepository>("UserRepository", UserRepository);
   container.register<ISessionRepository>("SessionRepository", SessionRepository);
   container.register<ILoanProductRepository>("LoanProductRepository", LoanProductRepository);
+  container.register<ICustomerRepository>("CustomerRepository", CustomerRepository);
+  container.register<IAddressRepository>("AddressRepository", AddressRepository);
 
   // container.registerSingleton("NotificationPublisher", NotificationPublisher);
   // container.registerSingleton("DeadLetterQueueConsumer", DeadLetterQueueConsumer);

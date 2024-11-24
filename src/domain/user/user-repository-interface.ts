@@ -19,5 +19,5 @@ export interface IUserRepository {
     changes?: Partial<User>,
     options?: { session: ClientSession }
   ): Promise<HydratedUserDocument>;
-  delete(user: HydratedUserDocument): Promise<void>;
+  delete(user: HydratedUserDocument, options?: { session: ClientSession }): Promise<void>;
 }

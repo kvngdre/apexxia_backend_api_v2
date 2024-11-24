@@ -13,10 +13,9 @@ export interface IAddressRepository {
     options?: { session: ClientSession }
   ): Promise<HydratedAddressDocument>;
   update(
-    tenantId: Types.ObjectId | string,
     address: HydratedAddressDocument,
     changes?: Partial<Address>,
     options?: { session: ClientSession }
   ): Promise<HydratedAddressDocument>;
-  delete(tenantId: Types.ObjectId | string, address: HydratedAddressDocument): Promise<void>;
+  delete(address: HydratedAddressDocument, options?: { session: ClientSession }): Promise<void>;
 }

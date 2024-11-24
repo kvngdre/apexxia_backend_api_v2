@@ -121,7 +121,7 @@ export class Lender extends Entity {
   );
 
   constructor(
-    public tenantId: Types.ObjectId,
+    public tenantId: Types.ObjectId | string,
     public name: string,
     public status: LenderStatus = LenderStatus.NEW
   ) {

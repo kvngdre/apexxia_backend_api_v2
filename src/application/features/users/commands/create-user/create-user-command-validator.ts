@@ -3,7 +3,7 @@ import { singleton } from "tsyringe";
 import {
   AbstractValidator,
   emailRule,
-  idRule,
+  objectIdStringRule,
   nameRule,
   personNameRule,
   ValidationResultType
@@ -15,7 +15,7 @@ export class CreateUserCommandValidator extends AbstractValidator<CreateUserComm
   public validate(request: CreateUserCommand): ValidationResultType<CreateUserCommand> {
     const schema = joi.object<CreateUserCommand>({
       tenant: joi.any().required(),
-      lenderId: idRule.label("Lender").required(),
+      lenderId: objectIdStringRule.label("Lender").required(),
       firstName: personNameRule.label("First name").required(),
       lastName: personNameRule.label("Last name").required(),
       email: emailRule.required(),

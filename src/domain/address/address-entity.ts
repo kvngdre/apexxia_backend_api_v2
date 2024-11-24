@@ -64,13 +64,14 @@ export class Address extends Entity {
     public city: string,
     public state: string,
     public latitude: number,
-    public longitude: number
+    public longitude: number,
+    public addressLine2: string | null = null,
+    public label: string | null = null
   ) {
     super();
+    this.fullAddress = `${addressLine1} ${addressLine2 ? addressLine2 : ""}, ${city}, ${state}, ${this.country}`;
   }
 
-  public label: string | null = null;
-  public addressLine2: string | null = null;
   public fullAddress: string;
   public country: string = "Nigeria";
   public _doc: Address;

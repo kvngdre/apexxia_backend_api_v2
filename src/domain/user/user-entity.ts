@@ -22,13 +22,11 @@ export class User extends Entity {
 
       firstName: {
         type: String,
-        trim: true,
         required: true
       },
 
       lastName: {
         type: String,
-        trim: true,
         required: true
       },
 
@@ -47,8 +45,6 @@ export class User extends Entity {
 
       email: {
         type: String,
-        lowercase: true,
-        trim: true,
         unique: true,
         required: true
       },

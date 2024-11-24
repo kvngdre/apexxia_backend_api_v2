@@ -2,11 +2,7 @@ import { Exception } from "@shared-kernel/exception";
 import { ExceptionType } from "@shared-kernel/exception-type";
 
 export class TenantExceptions {
-  public static readonly NotFound = (identifier: string) =>
-    Exception.NotFound(
-      "Tenant.NotFound",
-      `Failed to find tenant with the given identifier '${identifier}'.`
-    );
+  public static readonly NotFound = Exception.NotFound("Tenant.NotFound", "Tenant not found");
 
   public static readonly InvalidTenantID = new Exception(
     ExceptionType.Validation,

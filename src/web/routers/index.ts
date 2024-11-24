@@ -7,12 +7,15 @@ import { userRouter } from "./user.router";
 import { AuthenticateUserMiddleware, ResolveTenantMiddleware } from "@web/middleware";
 import { sessionRouter } from "./session-router";
 import { loanProductRouter } from "./loan-product-router";
+import { tenantRouter } from "./tenant-router";
+import { customerRouter } from "./customer-router";
 
 const apiRouter = Router();
 const resolveTenantMiddleware = container.resolve(ResolveTenantMiddleware).execute;
 const authenticateUserMiddleware = container.resolve(AuthenticateUserMiddleware).execute;
 
 apiRouter.use("/auth", authRouter);
+apiRouter.use("/customers", resolveTenantMiddleware, authenticateUserMiddleware, customerRouter);
 apiRouter.use("/lenders", resolveTenantMiddleware, authenticateUserMiddleware, lenderRouter);
 apiRouter.use(
   "/loan-products",
@@ -22,6 +25,7 @@ apiRouter.use(
 );
 apiRouter.use("/sessions", resolveTenantMiddleware, authenticateUserMiddleware, sessionRouter);
 apiRouter.use("/system", systemRouter);
+apiRouter.use("/tenants", tenantRouter);
 apiRouter.use("/users", resolveTenantMiddleware, authenticateUserMiddleware, userRouter);
 
 export default apiRouter;

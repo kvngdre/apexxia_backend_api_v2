@@ -4,3 +4,5 @@ export * from "./user-controller";
 export * from "./lender-controller";
 export * from "./session-controller";
 export * from "./loan-product-controller";
+export * from "./tenant-controller";
+export * from "./customer-controller";

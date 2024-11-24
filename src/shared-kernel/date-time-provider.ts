@@ -1,9 +1,5 @@
-import { singleton } from "tsyringe";
-import { IDateTimeProvider } from "@shared-kernel/date-time-provider-interface";
-
-@singleton()
-export class DateTimeProvider implements IDateTimeProvider {
-  public utcNow<T extends boolean = true>(
+export class DateTimeProvider {
+  public static utcNow<T extends boolean = true>(
     options: { inDateFormat?: T } = {}
   ): T extends true ? Date : number {
     options.inDateFormat ??= true as T;

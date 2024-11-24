@@ -50,8 +50,11 @@ export class LoanProductRepository implements ILoanProductRepository {
     });
   }
 
-  public async delete(loanProduct: HydratedLoanProductDocument) {
-    await loanProduct.deleteOne();
+  public async delete(
+    loanProduct: HydratedLoanProductDocument,
+    options?: { session: ClientSession }
+  ) {
+    await loanProduct.deleteOne({ session: options?.session });
   }
 
   public async isNameUnique(tenantId: string, name: string) {

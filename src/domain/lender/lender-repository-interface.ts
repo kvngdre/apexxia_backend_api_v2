@@ -17,5 +17,5 @@ export interface ILenderRepository {
     changes?: Partial<Lender>,
     options?: { session: ClientSession }
   ): Promise<HydratedLenderDocument>;
-  delete(lender: HydratedLenderDocument): Promise<void>;
+  delete(lender: HydratedLenderDocument, options?: { session: ClientSession }): Promise<void>;
 }

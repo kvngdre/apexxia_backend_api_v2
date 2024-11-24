@@ -7,8 +7,8 @@ export class Utils {
       uppercase: true
     }
   ) {
-    if (length < 3) {
-      throw new Error("Invalid operation: password length must be greater than or equal to 3.");
+    if (length < 4) {
+      throw new Error("Invalid operation: password length must be greater than or equal to 4.");
     }
 
     const letters = "abcdefghjkmnopqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ";

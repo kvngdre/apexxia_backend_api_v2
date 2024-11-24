@@ -8,7 +8,7 @@ import { IUserRepository } from "@domain/user/user-repository-interface";
 import { Encryption } from "@shared-kernel/encryption";
 import { AuthenticationExceptions } from "../../shared";
 import { LoginQueryValidator } from "./login-query-validator";
-import { UserExceptions, UserStatus } from "@domain/user";
+import { UserExceptions } from "@domain/user";
 import { ISessionRepository, Session } from "@domain/session";
 
 @scoped(Lifecycle.ResolutionScoped)

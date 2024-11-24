@@ -28,17 +28,20 @@ export class LenderRepository implements ILenderRepository {
   }
 
   public async update(
-    Lender: HydratedLenderDocument,
+    lender: HydratedLenderDocument,
     changes: Partial<Lender> = {},
     options?: { session: ClientSession }
   ): Promise<HydratedLenderDocument> {
-    return Lender.updateOne(Object.assign({ ...Lender, _id: undefined }, changes), {
+    return lender.updateOne(Object.assign({ ...Lender, _id: undefined }, changes), {
       new: true,
       session: options?.session
     });
   }
 
-  public async delete(Lender: HydratedLenderDocument): Promise<void> {
-    Lender.deleteOne();
+  public async delete(
+    lender: HydratedLenderDocument,
+    options?: { session: ClientSession }
+  ): Promise<void> {
+    await lender.deleteOne({ session: options?.session });
   }
 }

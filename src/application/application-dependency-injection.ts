@@ -29,6 +29,13 @@ import {
   CreateUserCommandHandler,
   CreateUserCommandValidator
 } from "./features/users/commands/create-user";
+import { GetTenantsQueryHandler } from "./features/tenants/queries/get-tenants";
+import { DeleteTenantCommandHandler } from "./features/tenants/commands/delete-tenant";
+import { GetCustomersQueryHandler } from "./features/customers/queries/get-customers";
+import {
+  CreateCustomerCommandHandler,
+  CreateCustomerCommandValidator
+} from "./features/customers/commands/create-customer";
 
 export function registerApplicationServices() {
   container.registerSingleton(SignupCommandValidator);
@@ -95,6 +102,23 @@ export function registerApplicationServices() {
 
   container.registerSingleton(CreateUserCommandValidator);
   container.register("CreateUserCommandHandler", CreateUserCommandHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.register("GetTenantsQueryHandler", GetTenantsQueryHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.register("DeleteTenantCommandHandler", DeleteTenantCommandHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.register("GetCustomersQueryHandler", GetCustomersQueryHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.registerSingleton(CreateCustomerCommandValidator);
+  container.register("CreateCustomerCommandHandler", CreateCustomerCommandHandler, {
     lifecycle: Lifecycle.ResolutionScoped
   });
 }

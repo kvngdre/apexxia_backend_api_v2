@@ -59,8 +59,8 @@ export class SessionRepository implements ISessionRepository {
     );
   }
 
-  public async delete(session: HydratedSessionDocument) {
-    await session.deleteOne();
+  public async delete(session: HydratedSessionDocument, options?: { session: ClientSession }) {
+    await session.deleteOne({ session: options?.session });
   }
 
   public async isUserIdUnique(tenantId: string, userId: string) {

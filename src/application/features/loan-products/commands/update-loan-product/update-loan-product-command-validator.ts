@@ -2,7 +2,7 @@ import joi from "joi";
 import { singleton } from "tsyringe";
 import {
   AbstractValidator,
-  idRule,
+  objectIdStringRule,
   numberRule,
   ValidationResultType,
   nameRule
@@ -20,7 +20,7 @@ export class UpdateLoanProductCommandValidator extends AbstractValidator<UpdateL
   ): ValidationResultType<UpdateLoanProductCommand> {
     const schema = joi.object<UpdateLoanProductCommand>({
       tenant: joi.any().required(),
-      loanProductId: idRule.label("Loan product").required(),
+      loanProductId: objectIdStringRule.label("Loan product").required(),
       name: nameRule,
       minLoanAmount: numberRule.label("Minimum loan amount"),
       maxLoanAmount: numberRule.label("Maximum loan amount").greater(joi.ref("minLoanAmount")),
