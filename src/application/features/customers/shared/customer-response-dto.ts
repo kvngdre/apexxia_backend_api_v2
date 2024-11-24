@@ -1,5 +1,4 @@
 import { ResponseDtoType } from "@application/shared/response-dto-type";
-import { Address } from "@domain/address";
 import { Customer } from "@domain/customer/customer-entity";
 import { INextOfKin } from "@domain/customer/next-of-kin-interface";
 

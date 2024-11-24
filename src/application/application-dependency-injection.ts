@@ -36,6 +36,7 @@ import {
   CreateCustomerCommandHandler,
   CreateCustomerCommandValidator
 } from "./features/customers/commands/create-customer";
+import { DeleteCustomerCommandHandler } from "./features/customers/commands/delete-customer";
 
 export function registerApplicationServices() {
   container.registerSingleton(SignupCommandValidator);
@@ -119,6 +120,10 @@ export function registerApplicationServices() {
 
   container.registerSingleton(CreateCustomerCommandValidator);
   container.register("CreateCustomerCommandHandler", CreateCustomerCommandHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.register("DeleteCustomerCommandHandler", DeleteCustomerCommandHandler, {
     lifecycle: Lifecycle.ResolutionScoped
   });
 }

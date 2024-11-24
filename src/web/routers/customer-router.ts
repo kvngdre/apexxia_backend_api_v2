@@ -7,3 +7,4 @@ const customerController = container.resolve(CustomerController);
 
 customerRouter.get("/", customerController.getCustomers);
 customerRouter.post("/", customerController.createCustomer);
+customerRouter.delete("/:customerId", customerController.deleteCustomer);

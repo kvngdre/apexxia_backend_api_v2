@@ -1,12 +1,16 @@
 import { Connection, createConnection } from "mongoose";
 import { inject, singleton } from "tsyringe";
 import { ILogger } from "@application/abstractions/logging";
+// import { RedisService } from "@infrastructure/services";
 
 @singleton()
 export class ConnectionManager {
   private readonly _connections: Map<string, Connection> = new Map();
 
-  constructor(@inject("Logger") private readonly _logger: ILogger) {}
+  constructor(
+    // private readonly _redisService: RedisService,
+    @inject("Logger") private readonly _logger: ILogger
+  ) {}
 
   public getTenantDatabaseConnection(tenantId: string, connectionURI: string): Connection {
     // If a connection exists for the given tenantId, return it

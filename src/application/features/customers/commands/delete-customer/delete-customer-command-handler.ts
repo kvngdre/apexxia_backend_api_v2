@@ -28,16 +28,15 @@ export class DeleteCustomerCommandHandler implements IRequestHandler<DeleteCusto
 
     try {
       await session.withTransaction(async () => {
+        await this._customerRepository.delete(customer, { session });
         if (address) {
           await this._addressRepository.delete(address, { session });
         }
-
-        await this._customerRepository.insert(value.tenant.id, customer, { session });
       });
     } finally {
       await session.endSession();
     }
 
-    return Result.success("Customer created successfully", CustomerResponseDto.from(customer));
+    return Result.success("Customer deleted successfully");
   }
 }

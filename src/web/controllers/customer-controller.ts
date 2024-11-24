@@ -4,6 +4,7 @@ import { BaseController } from "./base-controller";
 import { GetCustomersQuery } from "@application/features/customers/queries/get-customers";
 import { CreateCustomerCommand } from "@application/features/customers/commands/create-customer";
 import { HttpStatus } from "@web/web-infrastructure";
+import { DeleteCustomerCommand } from "@application/features/customers/commands/delete-customer";
 
 @scoped(Lifecycle.ResolutionScoped)
 export class CustomerController extends BaseController {
@@ -47,6 +48,16 @@ export class CustomerController extends BaseController {
     const result = await this.sender.send(command);
 
     const { code, payload } = this.buildHttpResponse(result, res, { code: HttpStatus.CREATED });
+
+    res.status(code).json(payload);
+  };
+
+  public deleteCustomer = async (req: Request<{ customerId: string }>, res: Response) => {
+    const command = new DeleteCustomerCommand(req.tenant!, req.params.customerId);
+
+    const result = await this.sender.send(command);
+
+    const { code, payload } = this.buildHttpResponse(result, res, { code: HttpStatus.NO_CONTENT });
 
     res.status(code).json(payload);
   };

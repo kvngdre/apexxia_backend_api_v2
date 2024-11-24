@@ -23,12 +23,13 @@ export class ResolveTenantMiddleware extends AbstractMiddleware {
       const subdomain: string = host.split(".")[0]!;
 
       if (!subdomain) {
+        // TODO: test this !!
         return this._r.execute(req, res, next);
       }
 
       // Check redis cache
       let tenant: string | Tenant | null = await this._redisService.get(
-        `tenant:subdomain:${subdomain}:`
+        `tenant:subdomain:${subdomain}`
       );
 
       if (!tenant) {
@@ -43,12 +44,18 @@ export class ResolveTenantMiddleware extends AbstractMiddleware {
         await this._redisService.set(
           `tenant:subdomain:${subdomain}`,
           JSON.stringify(tenant),
-          86400
+          86400 // 1 day in seconds
+        );
+
+        await this._redisService.set(
+          `tenant:${tenant._id.toString()}`,
+          JSON.stringify(tenant),
+          86400 // 1 day in seconds
         );
       }
 
       // Populate tenant information on the request object
-      req.tenant = tenant as Tenant;
+      req.tenant = JSON.parse(tenant as string) as Tenant;
 
       next();
     } catch (error) {

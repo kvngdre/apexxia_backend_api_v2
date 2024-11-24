@@ -9,6 +9,8 @@ import { Address, AddressModel } from "@domain/address";
 import { Session, SessionModel } from "@domain/session";
 import { LoanProduct, LoanProductModel } from "@domain/loan-product";
 import { Customer, CustomerModel } from "@domain/customer";
+import { RedisService } from "@infrastructure/services";
+import { Tenant } from "@domain/tenant";
 
 @singleton()
 export class ApplicationDbContext {
@@ -23,7 +25,8 @@ export class ApplicationDbContext {
 
   constructor(
     private readonly _connectionManager: ConnectionManager,
-    private readonly _centralDbContext: CentralDbContext
+    private readonly _centralDbContext: CentralDbContext,
+    private readonly _redisService: RedisService
   ) {}
 
   private synchronize(connection: mongoose.Connection) {
@@ -34,16 +37,21 @@ export class ApplicationDbContext {
 
   // Get tenant-specific database connection and synchronize entities.
   public async getTenantDBConnection(tenantId: string): Promise<mongoose.Connection> {
-    const tenant = await this._centralDbContext.getTenant(tenantId);
+    let tenant: Tenant = JSON.parse((await this._redisService.get(`tenant:${tenantId}`))!);
 
+    // if cache miss, make call to DB
     if (!tenant) {
-      throw new Error(`Failed to locate tenant ${tenantId} configurations`);
+      const foundTenant = await this._centralDbContext.getTenant(tenantId);
+      if (!foundTenant) {
+        throw new Error(`Failed to locate tenant ${tenantId} configurations`);
+      }
+
+      tenant = foundTenant;
     }
 
     const connectionURI = tenant!.databaseConnectionURI
       .replace("<user>", process.env.DB_USER)
       .replace("<password>", process.env.DB_PASSWORD);
-    // const connectionURI = tenant!.databaseConnectionURI;
 
     const connection = this._connectionManager.getTenantDatabaseConnection(tenantId, connectionURI);
     this.synchronize(connection);
