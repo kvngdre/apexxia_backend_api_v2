@@ -24,7 +24,7 @@ export class LoginQueryHandler implements IRequestHandler<LoginQuery, Authentica
     const { isFailure, exception, value } = this._validator.validate(query);
     if (isFailure) return Result.failure(exception);
 
-    const user = await this._userRepository.findByEmail(value.tenant.id, value.email);
+    const user = await this._userRepository.findByEmail(value.tenant._id, value.email);
 
     if (user === null || !Encryption.compare(user.hashedPassword as string, value.password)) {
       return Result.failure(AuthenticationExceptions.InvalidCredentials);
@@ -36,7 +36,7 @@ export class LoginQueryHandler implements IRequestHandler<LoginQuery, Authentica
     const { token, expiresAt } = this._jwtService.generateToken({
       sub: user.id,
       id: user.id,
-      tenantId: value.tenant.id,
+      tenantId: value.tenant._id.toString(),
       lenderId: user.lenderId.toString()
     });
 
@@ -46,7 +46,7 @@ export class LoginQueryHandler implements IRequestHandler<LoginQuery, Authentica
       new Date(expiresAt),
       new Date()
     );
-    await this._sessionRepository.upsertByUserId(value.tenant.id, session);
+    await this._sessionRepository.upsertByUserId(value.tenant._id, session);
 
     // TODO: Raise login domain event
 

@@ -5,11 +5,22 @@ import { GetCustomersQuery } from "@application/features/customers/queries/get-c
 import { CreateCustomerCommand } from "@application/features/customers/commands/create-customer";
 import { HttpStatus } from "@web/web-infrastructure";
 import { DeleteCustomerCommand } from "@application/features/customers/commands/delete-customer";
+import { GetCustomerByIdQuery } from "@application/features/customers/queries/get-customer-by-id/get-customer-by-id-query";
 
 @scoped(Lifecycle.ResolutionScoped)
 export class CustomerController extends BaseController {
   public getCustomers = async (req: Request, res: Response) => {
     const query = new GetCustomersQuery(req.tenant!);
+
+    const result = await this.sender.send(query);
+
+    const { code, payload } = this.buildHttpResponse(result, res);
+
+    res.status(code).json(payload);
+  };
+
+  public getCustomer = async (req: Request<{ customerId: string }>, res: Response) => {
+    const query = new GetCustomerByIdQuery(req.tenant!, req.params.customerId);
 
     const result = await this.sender.send(query);
 

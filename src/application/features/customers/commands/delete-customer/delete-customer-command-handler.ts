@@ -15,16 +15,19 @@ export class DeleteCustomerCommandHandler implements IRequestHandler<DeleteCusto
   ) {}
 
   public async handle(command: DeleteCustomerCommand): Promise<ResultType<unknown>> {
-    const customer = await this._customerRepository.findById(command.tenant.id, command.customerId);
+    const customer = await this._customerRepository.findById(
+      command.tenant._id.toString(),
+      command.customerId
+    );
     if (!customer) return Result.failure(CustomerExceptions.NotFound);
 
     const address = await this._addressRepository.findById(
-      command.tenant.id,
+      command.tenant._id.toString(),
       customer.residentialAddressId.toString()
     );
 
     // Persist with db transaction
-    const session = await this._appDbContext.startTransactionSession(command.tenant.id);
+    const session = await this._appDbContext.startTransactionSession(command.tenant._id.toString());
 
     try {
       await session.withTransaction(async () => {

@@ -63,6 +63,7 @@ export class AuthenticateUserMiddleware extends AbstractMiddleware {
       return;
     }
 
+    // ! TODO: move this to redis as well as in login handler
     const [user, session] = await Promise.all([
       this._userRepository.findById(decoded.tenantId as string, decoded.sub as string),
       this._sessionRepository.findByUserId(decoded.tenantId as string, decoded.sub as string)

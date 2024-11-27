@@ -13,7 +13,7 @@ export const ageExtension: ExtensionFactory = (joi) => ({
   type: "date",
   base: joi.date(),
   messages: {
-    "date.isAbove18": "{#label} should be at least 18 years old.",
+    "date.isAbove18": "{#label} should be 18 years or older.",
     "date.isBelow60": "{#label} should be not older than 60 years."
   },
   rules: {

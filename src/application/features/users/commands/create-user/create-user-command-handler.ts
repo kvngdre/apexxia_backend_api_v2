@@ -30,7 +30,7 @@ export class CreateUserCommandHandler
     );
     user.jobTitle = value.jobTitle || null;
 
-    await this._userRepository.insert(value.tenant.id, user);
+    await this._userRepository.insert(value.tenant._id, user);
 
     // send verification email or raise event
     console.log("Your temporary password is: " + temporaryPassword);

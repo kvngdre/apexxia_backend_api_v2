@@ -37,6 +37,7 @@ import {
   CreateCustomerCommandValidator
 } from "./features/customers/commands/create-customer";
 import { DeleteCustomerCommandHandler } from "./features/customers/commands/delete-customer";
+import { GetCustomerByIdQueryHandler } from "./features/customers/queries/get-customer-by-id";
 
 export function registerApplicationServices() {
   container.registerSingleton(SignupCommandValidator);
@@ -124,6 +125,10 @@ export function registerApplicationServices() {
   });
 
   container.register("DeleteCustomerCommandHandler", DeleteCustomerCommandHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.register("GetCustomerByIdHandler", GetCustomerByIdQueryHandler, {
     lifecycle: Lifecycle.ResolutionScoped
   });
 }

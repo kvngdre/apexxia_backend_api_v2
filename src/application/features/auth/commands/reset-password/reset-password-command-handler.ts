@@ -19,7 +19,7 @@ export class ResetPasswordCommandHandler implements IRequestHandler<ResetPasswor
     const { isFailure, exception, value } = this._validator.validate(command);
     if (isFailure) return Result.failure(exception);
 
-    const user = await this._userRepository.findByEmail(value.tenant.id, value.email);
+    const user = await this._userRepository.findByEmail(value.tenant._id, value.email);
     if (!user || !Encryption.compare(user.hashedPassword as string, value.tempPassword)) {
       return Result.failure(AuthenticationExceptions.InvalidCredentials);
     }

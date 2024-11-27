@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { container, singleton } from "tsyringe";
-// import { sync } from "glob";
-// import path from "path";
+import { sync } from "glob";
+import path from "path";
 import { ResultType } from "@shared-kernel/index";
 import { IRequestHandler } from "./request-handler-interface";
 import { IRequest } from "./request-interface";
 import { Logger } from "@infrastructure/logging";
 import { IMediator } from "./mediator-interface";
 import {
-  GetCustomersQuery,
-  GetCustomersQueryHandler
-} from "@application/features/customers/queries/get-customers";
+  CreateCustomerCommand,
+  CreateCustomerCommandHandler
+} from "@application/features/customers/commands/create-customer";
 
 @singleton()
 export class Mediator implements IMediator {
@@ -19,10 +19,10 @@ export class Mediator implements IMediator {
   constructor(private readonly _logger: Logger) {
     this.registerHandler.bind(this);
 
-    // this._discoverAndRegisterHandlers();
-    this._logger.logInfo("reg...");
+    this._discoverAndRegisterHandlers();
+    // this._logger.logInfo("reg...");
 
-    this.registerHandler(GetCustomersQuery, container.resolve(GetCustomersQueryHandler));
+    // this.registerHandler(CreateCustomerCommand, container.resolve(CreateCustomerCommandHandler));
   }
 
   public async send<TValue>(request: IRequest<TValue>): Promise<ResultType<TValue>> {
@@ -46,52 +46,52 @@ export class Mediator implements IMediator {
     this._handlers.set(requestClass.name, handler);
   }
 
-  // private async _discoverAndRegisterHandlers() {
-  //   const pattern = "**/*-handler.{ts,js}";
-  //   const handlerFiles = sync(pattern, {
-  //     ignore: ["node_modules/**", "dist/**"]
-  //   });
+  private async _discoverAndRegisterHandlers() {
+    const pattern = "**/*-handler.{ts,js}";
+    const handlerFiles = sync(pattern, {
+      ignore: ["node_modules/**", "dist/**"]
+    });
 
-  //   for (const file of handlerFiles) {
-  //     // Dynamically import the handler file
-  //     const filePath = path.resolve(file);
+    for (const file of handlerFiles) {
+      // Dynamically import the handler file
+      const filePath = path.resolve(file);
 
-  //     const handlerModule = await import(filePath);
+      const handlerModule = await import(filePath);
 
-  //     // Iterate over the module's exports to find the handler class
-  //     for (const key of Object.keys(handlerModule)) {
-  //       const handlerClass = handlerModule[key];
+      // Iterate over the module's exports to find the handler class
+      for (const key of Object.keys(handlerModule)) {
+        const handlerClass = handlerModule[key];
 
-  //       // Check if the handler class implements the IRequestHandler interface
-  //       if (this._isRequestHandler(handlerClass)) {
-  //         // Resolve the handler instance using tsyringe container
-  //         const handlerInstance =
-  //           container.resolve<IRequestHandler<IRequest, unknown>>(handlerClass);
+        // Check if the handler class implements the IRequestHandler interface
+        if (this._isRequestHandler(handlerClass)) {
+          // Resolve the handler instance using tsyringe container
+          const handlerInstance =
+            container.resolve<IRequestHandler<IRequest, unknown>>(handlerClass);
 
-  //         // Extract the request type from the handler (optional: based on naming convention or custom logic)
-  //         const requestName = this._getRequestName(handlerClass);
+          // Extract the request type from the handler (optional: based on naming convention or custom logic)
+          const requestName = this._getRequestName(handlerClass);
 
-  //         // Register the handler in the _handlers map
-  //         this._handlers.set(requestName, handlerInstance);
-  //       }
-  //     }
-  //   }
+          // Register the handler in the _handlers map
+          this._handlers.set(requestName, handlerInstance);
+        }
+      }
+    }
 
-  //   this._logger.logDebug("Request handlers registered...✅");
-  // }
+    this._logger.logDebug("Request handlers registered...✅");
+  }
 
-  // // Helper method to check if a class implements IRequestHandler
-  // private _isRequestHandler(handlerClass: any): boolean {
-  //   return (
-  //     typeof handlerClass === "function" &&
-  //     handlerClass.prototype &&
-  //     typeof handlerClass.prototype.handle === "function"
-  //   );
-  // }
+  // Helper method to check if a class implements IRequestHandler
+  private _isRequestHandler(handlerClass: any): boolean {
+    return (
+      typeof handlerClass === "function" &&
+      handlerClass.prototype &&
+      typeof handlerClass.prototype.handle === "function"
+    );
+  }
 
-  // // Helper method to extract the request type or name
-  // private _getRequestName(handlerClass: any): string {
-  //   // Assuming the handler class follows a naming convention like SomeRequestHandler
-  //   return handlerClass.name.replace("Handler", "");
-  // }
+  // Helper method to extract the request type or name
+  private _getRequestName(handlerClass: any): string {
+    // Assuming the handler class follows a naming convention like SomeRequestHandler
+    return handlerClass.name.replace("Handler", "");
+  }
 }

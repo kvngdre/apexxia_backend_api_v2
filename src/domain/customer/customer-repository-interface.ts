@@ -18,7 +18,7 @@ export interface ICustomerRepository {
     options?: { session: ClientSession }
   ): Promise<HydratedCustomerDocument>;
   delete(customer: HydratedCustomerDocument, options?: { session: ClientSession }): Promise<void>;
-  isBVNUnique(tenantId: Types.ObjectId | string, bvn: string): Promise<boolean>;
+  isBVNUnique(tenantId: Types.ObjectId | string, bvn: number): Promise<boolean>;
   isIdNumberUnique(tenantId: Types.ObjectId | string, idNumber: string): Promise<boolean>;
   isAccountNumberUnique(tenantId: Types.ObjectId | string, accountNumber: string): Promise<boolean>;
 }

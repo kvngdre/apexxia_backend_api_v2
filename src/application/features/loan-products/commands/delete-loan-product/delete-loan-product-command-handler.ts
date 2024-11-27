@@ -13,7 +13,7 @@ export class DeleteLoanProductCommandHandler implements IRequestHandler<DeleteLo
 
   public async handle(command: DeleteLoanProductCommand): Promise<ResultType<unknown>> {
     const product = await this._loanProductRepository.findById(
-      command.tenant.id,
+      command.tenant._id.toString(),
       command.loanProductId
     );
     if (!product) return Result.failure(LoanProductExceptions.NotFound);

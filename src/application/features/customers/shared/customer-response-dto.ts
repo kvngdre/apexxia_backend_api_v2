@@ -4,8 +4,8 @@ import { INextOfKin } from "@domain/customer/next-of-kin-interface";
 
 export class CustomerResponseDto {
   constructor(
-    public readonly lenderId: string,
     public readonly customerId: string,
+    public readonly lenderId: string,
     public readonly passportPicture: string | null,
     public readonly firstName: string,
     public readonly middleName: string | null,
@@ -37,8 +37,8 @@ export class CustomerResponseDto {
       !customer
         ? null
         : new CustomerResponseDto(
-            customer.lenderId.toString(),
             customer._id.toString(),
+            customer.lenderId.toString(),
             customer.passportPicture,
             customer.firstName,
             customer.middleName,

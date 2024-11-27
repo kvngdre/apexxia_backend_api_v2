@@ -28,13 +28,19 @@ const extendedJoi: JoiDateExtend = joi.extend(ageExtension);
 export class CreateCustomerCommandValidator extends AbstractValidator<CreateCustomerCommand> {
   public validate(request: CreateCustomerCommand): ValidationResultType<CreateCustomerCommand> {
     const schema = joi.object<CreateCustomerCommand>({
-      tenant: extendedJoi.any().forbidden(),
+      tenant: extendedJoi.any(),
       lenderId: objectIdStringRule,
       firstName: personNameRule.label("First name").required(),
       middleName: personNameRule.label("Middle name").allow(null).required(),
       lastName: personNameRule.label("Last name").required(),
       gender: genderRule.required(),
-      dateOfBirth: extendedJoi.date().iso().isAbove18().isBelow60().required(),
+      dateOfBirth: extendedJoi
+        .date()
+        .label("Date of birth")
+        .iso()
+        .isAbove18()
+        .isBelow60()
+        .required(),
       residentialAddress: extendedJoi
         .object({
           addressLine1: extendedJoi

@@ -104,7 +104,7 @@ export const personNameRule = joi
   .min(1)
   .max(128)
   .trim()
-  .pattern(/^[A-Z][a-z]+([-'’][A-Z][a-z]+)?$/)
+  .pattern(/^[A-Za-z]+([-'][A-Za-z]+)?$/)
   .custom((value, helpers) => {
     if (/\s/.test(value)) {
       return helpers.error("string.noWhitespace");

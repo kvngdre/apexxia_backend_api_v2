@@ -18,14 +18,14 @@ export class UpdateLoanProductCommandHandler implements IRequestHandler<UpdateLo
     if (isFailure) return Result.failure(exception);
 
     const product = await this._loanProductRepository.findById(
-      value.tenant.id,
+      value.tenant._id,
       value.loanProductId
     );
     if (!product) return Result.failure(LoanProductExceptions.NotFound);
 
     if (
       value.name &&
-      !(await this._loanProductRepository.isNameUnique(value.tenant.id, value.name))
+      !(await this._loanProductRepository.isNameUnique(value.tenant._id, value.name))
     ) {
       return Result.failure(LoanProductExceptions.DuplicateName);
     }

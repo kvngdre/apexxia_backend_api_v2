@@ -6,5 +6,6 @@ export const customerRouter = Router();
 const customerController = container.resolve(CustomerController);
 
 customerRouter.get("/", customerController.getCustomers);
+customerRouter.get("/:customerId", customerController.getCustomer);
 customerRouter.post("/", customerController.createCustomer);
 customerRouter.delete("/:customerId", customerController.deleteCustomer);

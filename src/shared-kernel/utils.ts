@@ -65,7 +65,12 @@ export class Utils {
     const keys = Object.keys(data);
 
     for (const key of keys) {
-      if (data[key] && typeof data[key] === "object") {
+      if (
+        data[key] &&
+        typeof data[key] === "object" &&
+        data[key] !== null &&
+        Object.prototype.toString.call(data[key]) === "[object Object]"
+      ) {
         // If the value is an object, recurse into it
         Utils.omitUndefinedFields(data[key] as { [key: string]: object });
 
@@ -81,5 +86,15 @@ export class Utils {
     }
 
     return data;
+  }
+
+  public static omitFields<T>(obj: object, ...fields: string[]) {
+    const data: { [key: string]: unknown } = Object.assign(obj) as { [key: string]: unknown };
+
+    for (const field of fields) {
+      delete data[field];
+    }
+
+    return data as T;
   }
 }

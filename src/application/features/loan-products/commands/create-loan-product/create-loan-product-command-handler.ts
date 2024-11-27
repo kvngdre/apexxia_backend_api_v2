@@ -22,7 +22,7 @@ export class CreateLoanProductCommandHandler
     const { isFailure, exception, value } = this._validator.validate(command);
     if (isFailure) return Result.failure(exception);
 
-    if (!(await this._loanProductRepository.isNameUnique(value.tenant.id, value.name))) {
+    if (!(await this._loanProductRepository.isNameUnique(value.tenant._id, value.name))) {
       return Result.failure(LoanProductExceptions.DuplicateName);
     }
 
@@ -44,7 +44,7 @@ export class CreateLoanProductCommandHandler
       value.fees
     );
 
-    await this._loanProductRepository.insert(value.tenant.id, product);
+    await this._loanProductRepository.insert(value.tenant._id, product);
 
     return Result.success("Loan product created", LoanProductResponseDto.from(product));
   }
