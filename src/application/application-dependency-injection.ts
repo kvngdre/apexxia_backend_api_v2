@@ -38,6 +38,12 @@ import {
 } from "./features/customers/commands/create-customer";
 import { DeleteCustomerCommandHandler } from "./features/customers/commands/delete-customer";
 import { GetCustomerByIdQueryHandler } from "./features/customers/queries/get-customer-by-id";
+import { GetLoansQueryHandler } from "./features/loans/queries/get-loans";
+import {
+  CreateLoanCommandHandler,
+  CreateLoanCommandValidator
+} from "./features/loans/commands/create-loan";
+import { GetLoanByIdQueryHandler } from "./features/loans/queries/get-loan-by-id";
 
 export function registerApplicationServices() {
   container.registerSingleton(SignupCommandValidator);
@@ -128,7 +134,22 @@ export function registerApplicationServices() {
     lifecycle: Lifecycle.ResolutionScoped
   });
 
-  container.register("GetCustomerByIdHandler", GetCustomerByIdQueryHandler, {
+  container.register("GetCustomerByIdQueryHandler", GetCustomerByIdQueryHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.register("CreateLoanCommandHandler", CreateLoanCommandHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+  container.register("CreateLoanCommandValidator", CreateLoanCommandValidator, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.register("GetLoansQueryHandler", GetLoansQueryHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.register("GetLoanByIdQueryHandler", GetLoanByIdQueryHandler, {
     lifecycle: Lifecycle.ResolutionScoped
   });
 }

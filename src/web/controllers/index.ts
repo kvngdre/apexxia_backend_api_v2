@@ -6,3 +6,4 @@ export * from "./session-controller";
 export * from "./loan-product-controller";
 export * from "./tenant-controller";
 export * from "./customer-controller";
+export * from "./loan-controller";

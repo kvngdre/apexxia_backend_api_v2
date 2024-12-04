@@ -12,7 +12,7 @@ export class GetLenderByIdQueryHandler
   constructor(@inject("LenderRepository") private readonly _lenderRepository: ILenderRepository) {}
 
   public async handle(query: GetLenderByIdQuery): Promise<ResultType<LenderResponseDto>> {
-    const lender = await this._lenderRepository.findById(query.tenant.id, query.lenderId);
+    const lender = await this._lenderRepository.findById(query.tenant._id, query.lenderId);
     if (!lender) return Result.failure(LenderExceptions.NotFound);
 
     return Result.success("Lender retrieved successfully", LenderResponseDto.from(lender));

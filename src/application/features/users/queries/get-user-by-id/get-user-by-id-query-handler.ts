@@ -10,7 +10,7 @@ export class GetUserByIdQueryHandler implements IRequestHandler<GetUserByIdQuery
   constructor(@inject("UserRepository") private readonly _userRepository: IUserRepository) {}
 
   public async handle(query: GetUserByIdQuery): Promise<ResultType<UserResponseDto>> {
-    const user = await this._userRepository.findById(query.tenant.id, query.userId);
+    const user = await this._userRepository.findById(query.tenant._id, query.userId);
     if (!user) return Result.failure(UserExceptions.NotFound);
 
     return Result.success("User retrieved", UserResponseDto.from(user));

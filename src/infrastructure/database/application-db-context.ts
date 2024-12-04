@@ -11,6 +11,8 @@ import { LoanProduct, LoanProductModel } from "@domain/loan-product";
 import { Customer, CustomerModel } from "@domain/customer";
 import { RedisService } from "@infrastructure/services";
 import { Tenant } from "@domain/tenant";
+import { Loan, LoanModel } from "@domain/loan";
+import { AuditTrail, AuditTrailModel } from "@domain/audit-trail";
 
 @singleton()
 export class ApplicationDbContext {
@@ -20,7 +22,9 @@ export class ApplicationDbContext {
     User,
     Session,
     LoanProduct,
-    Customer
+    Customer,
+    Loan,
+    AuditTrail
   ] as unknown as (typeof Entity)[];
 
   constructor(
@@ -69,6 +73,14 @@ export class ApplicationDbContext {
     return connection.model<Address, AddressModel>(Address.collectionName, Address.schema);
   }
 
+  public async auditTrails(tenantId: string) {
+    const connection = await this.getTenantDBConnection(tenantId);
+    return connection.model<AuditTrail, AuditTrailModel>(
+      AuditTrail.collectionName,
+      AuditTrail.schema
+    );
+  }
+
   public async customers(tenantId: string) {
     const connection = await this.getTenantDBConnection(tenantId);
     return connection.model<Customer, CustomerModel>(Customer.collectionName, Customer.schema);
@@ -85,6 +97,11 @@ export class ApplicationDbContext {
       LoanProduct.collectionName,
       LoanProduct.schema
     );
+  }
+
+  public async loans(tenantId: string) {
+    const connection = await this.getTenantDBConnection(tenantId);
+    return connection.model<Loan, LoanModel>(Loan.collectionName, Loan.schema);
   }
 
   public async sessions(tenantId: string) {

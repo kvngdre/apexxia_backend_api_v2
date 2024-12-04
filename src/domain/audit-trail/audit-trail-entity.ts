@@ -48,14 +48,14 @@ export class AuditTrail extends Entity {
     public entityId: Types.ObjectId | string,
     public entityType: string,
     public action: string,
-    public performedBy: string
+    public performedBy: string,
+    public previousData: unknown = null,
+    public newData: unknown = null
   ) {
     super();
   }
 
   public timestamp: Date = DateTimeProvider.utcNow();
-  public previousData: unknown = null;
-  public newData: unknown = null;
   public user?: User;
   public _doc: AuditTrail;
 }

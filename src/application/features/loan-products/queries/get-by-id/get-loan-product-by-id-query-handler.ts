@@ -15,7 +15,7 @@ export class GetLoanProductByIdQueryHandler
 
   public async handle(query: GetLoanProductByIdQuery): Promise<ResultType<LoanProductResponseDto>> {
     const product = await this._loanProductRepository.findById(
-      query.tenant.id,
+      query.tenant._id,
       query.loanProductId
     );
 

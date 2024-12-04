@@ -5,3 +5,5 @@ export * from "./session-repository";
 export * from "./loan-product-repository";
 export * from "./customer-repository";
 export * from "./address-repository";
+export * from "./loan-repository";
+export * from "./audit-trail-repository";

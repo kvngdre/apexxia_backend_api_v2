@@ -10,7 +10,7 @@ export class GetUsersQueryHandler implements IRequestHandler<GetUsersQuery, User
   constructor(@inject("UserRepository") private readonly _userRepository: IUserRepository) {}
 
   public async handle(query: GetUsersQuery): Promise<ResultType<UserResponseDto[]>> {
-    const users = await this._userRepository.find(query.tenant.id);
+    const users = await this._userRepository.find(query.tenant._id);
 
     return Result.success("Users retrieved", UserResponseDto.fromMany(users));
   }

@@ -9,6 +9,7 @@ import { sessionRouter } from "./session-router";
 import { loanProductRouter } from "./loan-product-router";
 import { tenantRouter } from "./tenant-router";
 import { customerRouter } from "./customer-router";
+import { loanRouter } from "./loan-router";
 
 const apiRouter = Router();
 const resolveTenantMiddleware = container.resolve(ResolveTenantMiddleware).execute;
@@ -23,6 +24,7 @@ apiRouter.use(
   authenticateUserMiddleware,
   loanProductRouter
 );
+apiRouter.use("/loans", resolveTenantMiddleware, authenticateUserMiddleware, loanRouter);
 apiRouter.use("/sessions", resolveTenantMiddleware, authenticateUserMiddleware, sessionRouter);
 apiRouter.use("/system", systemRouter);
 apiRouter.use("/tenants", tenantRouter);

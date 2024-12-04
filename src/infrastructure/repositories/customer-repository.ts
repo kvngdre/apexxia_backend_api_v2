@@ -47,7 +47,7 @@ export class CustomerRepository implements ICustomerRepository {
     await customer.deleteOne({ session: options?.session });
   }
 
-  public async isBVNUnique(tenantId: string, bvn: string) {
+  public async isBVNUnique(tenantId: string, bvn: number) {
     const matches = await (await this._dbContext.customers(tenantId)).find({ bvn });
 
     return matches.length < 1;

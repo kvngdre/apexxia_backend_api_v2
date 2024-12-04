@@ -3,7 +3,9 @@ import { ValidationException } from "../validation-exception";
 import { Utils } from "../utils";
 
 export abstract class AbstractValidator<TRequest extends object> {
-  abstract validate(request: TRequest): ValidationResultType<TRequest>;
+  abstract validate(
+    request: TRequest
+  ): ValidationResultType<TRequest> | Promise<ValidationResultType<TRequest>>;
 
   protected mapToValidationResult(
     result: joi.ValidationResult<TRequest>
@@ -35,7 +37,6 @@ export abstract class AbstractValidator<TRequest extends object> {
 
     // Remove quotation marks and insert comma to number if a number is present in the error message.
     const formattedMessage = `${message.replaceAll('"', "")}`.replace(regex, ",");
-
     return formattedMessage;
   }
 }

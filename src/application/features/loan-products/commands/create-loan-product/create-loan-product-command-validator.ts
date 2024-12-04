@@ -3,7 +3,7 @@ import { singleton } from "tsyringe";
 import {
   AbstractValidator,
   objectIdStringRule,
-  numberRule,
+  positiveNumberRule,
   ValidationResultType,
   nameRule
 } from "@shared-kernel/validation";
@@ -25,21 +25,23 @@ export class CreateLoanProductCommandValidator extends AbstractValidator<CreateL
       tenant: joi.any().required(),
       lenderId: objectIdStringRule.label("Lender").required(),
       name: nameRule.required(),
-      minLoanAmount: numberRule.label("Minimum loan amount").required(),
-      maxLoanAmount: numberRule
+      minLoanAmount: positiveNumberRule.label("Minimum loan amount").required(),
+      maxLoanAmount: positiveNumberRule
         .label("Maximum loan amount")
         .greater(joi.ref("minLoanAmount"))
         .required(),
-      interestRateInPercentage: numberRule
+      interestRateInPercentage: positiveNumberRule
         .label("Interest rate")
         .precision(2)
         .max(100.0)
         .required(),
       isActive: joi.boolean().label("Active status"),
-      minTenureInMonths: numberRule.label("Minimum tenure"),
-      maxTenureInMonths: numberRule.label("Maximum tenure").greater(joi.ref("minTenureInMonths")),
-      upfrontFee: numberRule.label("Upfront fee"),
-      maxDTIInPercentage: numberRule.label("Maximum Debt-to-Income(D.T.I) ratio"),
+      minTenureInMonths: positiveNumberRule.label("Minimum tenure"),
+      maxTenureInMonths: positiveNumberRule
+        .label("Maximum tenure")
+        .greater(joi.ref("minTenureInMonths")),
+      upfrontFee: positiveNumberRule.label("Upfront fee"),
+      maxDTIInPercentage: positiveNumberRule.label("Maximum Debt-to-Income(D.T.I) ratio"),
       fees: joi
         .array()
         .label("Fees")
@@ -51,10 +53,10 @@ export class CreateLoanProductCommandValidator extends AbstractValidator<CreateL
           })
         )
         .min(1),
-      minIncome: numberRule.label("Minimum income").precision(2),
-      maxIncome: numberRule.label("Maximum income").min(joi.ref("minIncome")).precision(2),
-      minAge: numberRule.label("Minimum age").min(18),
-      maxAge: numberRule.label("Minimum age").min(joi.ref("minAge"))
+      minIncome: positiveNumberRule.label("Minimum income").precision(2),
+      maxIncome: positiveNumberRule.label("Maximum income").min(joi.ref("minIncome")).precision(2),
+      minAge: positiveNumberRule.label("Minimum age").min(18),
+      maxAge: positiveNumberRule.label("Minimum age").min(joi.ref("minAge"))
     });
 
     const result = schema.validate(request);

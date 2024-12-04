@@ -42,6 +42,7 @@ export class GlobalErrorHandler {
 
     // Log error
     this._logger.logError(error.message, error.stack);
+    console.error(error.stack);
 
     // Run other processes below
     await this._contactAdmin();

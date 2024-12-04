@@ -14,7 +14,7 @@ export class GetLoanProductsQueryHandler
   ) {}
 
   public async handle(query: GetLoanProductsQuery): Promise<ResultType<LoanProductResponseDto[]>> {
-    const products = await this._loanProductRepository.find(query.tenant.id);
+    const products = await this._loanProductRepository.find(query.tenant._id);
 
     return Result.success("Loan products retrieved", LoanProductResponseDto.fromMany(products));
   }

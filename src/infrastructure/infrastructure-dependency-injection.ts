@@ -10,9 +10,11 @@ import { ConnectionManager, CentralDbContext } from "./database";
 import { JwtService, RedisService } from "./services";
 import {
   AddressRepository,
+  AuditTrailRepository,
   CustomerRepository,
   LenderRepository,
   LoanProductRepository,
+  LoanRepository,
   SessionRepository,
   TenantRepository,
   UserRepository
@@ -25,6 +27,8 @@ import { ISessionRepository } from "@domain/session";
 import { ILoanProductRepository } from "@domain/loan-product";
 import { ICustomerRepository } from "@domain/customer";
 import { IAddressRepository } from "@domain/address";
+import { ILoanRepository } from "@domain/loan";
+import { IAuditTrailRepository } from "@domain/audit-trail";
 
 export function registerInfrastructureServices() {
   container.registerSingleton<ILogger>("Logger", Logger);
@@ -42,6 +46,8 @@ export function registerInfrastructureServices() {
   container.register<ILoanProductRepository>("LoanProductRepository", LoanProductRepository);
   container.register<ICustomerRepository>("CustomerRepository", CustomerRepository);
   container.register<IAddressRepository>("AddressRepository", AddressRepository);
+  container.register<ILoanRepository>("LoanRepository", LoanRepository);
+  container.register<IAuditTrailRepository>("AuditTrailRepository", AuditTrailRepository);
 
   // container.registerSingleton("NotificationPublisher", NotificationPublisher);
   // container.registerSingleton("DeadLetterQueueConsumer", DeadLetterQueueConsumer);
