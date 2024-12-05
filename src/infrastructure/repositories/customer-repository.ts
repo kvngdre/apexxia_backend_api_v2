@@ -34,7 +34,7 @@ export class CustomerRepository implements ICustomerRepository {
     changes: Partial<Customer> = {},
     options?: { session: ClientSession }
   ): Promise<HydratedCustomerDocument> {
-    return customer.updateOne(Object.assign({ ...Customer, _id: undefined }, changes), {
+    return customer.updateOne(Object.assign({ ...customer._doc, _id: undefined }, changes), {
       new: true,
       session: options?.session
     });

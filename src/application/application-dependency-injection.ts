@@ -44,6 +44,14 @@ import {
   CreateLoanCommandValidator
 } from "./features/loans/commands/create-loan";
 import { GetLoanByIdQueryHandler } from "./features/loans/queries/get-loan-by-id";
+import {
+  UpdateLoanCommandHandler,
+  UpdateLoanCommandValidator
+} from "./features/loans/commands/update-loan";
+import {
+  UpdateUserCommandHandler,
+  UpdateUserCommandValidator
+} from "./features/users/commands/update-user";
 
 export function registerApplicationServices() {
   container.registerSingleton(SignupCommandValidator);
@@ -150,6 +158,16 @@ export function registerApplicationServices() {
   });
 
   container.register("GetLoanByIdQueryHandler", GetLoanByIdQueryHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.registerSingleton(UpdateLoanCommandValidator);
+  container.register("UpdateLoanCommandHandler", UpdateLoanCommandHandler, {
+    lifecycle: Lifecycle.ResolutionScoped
+  });
+
+  container.registerSingleton(UpdateUserCommandValidator);
+  container.register("UpdateUserCommandHandler", UpdateUserCommandHandler, {
     lifecycle: Lifecycle.ResolutionScoped
   });
 }

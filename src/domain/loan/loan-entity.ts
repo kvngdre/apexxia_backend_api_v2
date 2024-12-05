@@ -7,6 +7,8 @@ import { LoanProduct } from "@domain/loan-product";
 import { LoanStatus } from "./loan-status-enum";
 import { AuditTrail, IAuditTrailRepository } from "@domain/audit-trail";
 import { AuditTrailAction } from "@domain/audit-trail/audit-trail-action-enum";
+import { LoanExceptions } from "./loan-exceptions";
+import { Exception } from "@shared-kernel/exception";
 
 export class Loan extends Entity {
   public static readonly collectionName = "Loan";
@@ -104,8 +106,7 @@ export class Loan extends Entity {
     public loanProductId: Types.ObjectId | string,
     public amountRequested: number,
     public tenureInMonthsRequested: number,
-    public interestRateInPercentage: number,
-    public auditTrailContext: { tenantId: string; action: AuditTrailAction; performedBy: string }
+    public interestRateInPercentage: number
   ) {
     super();
     this.amountRecommended = this.amountRequested;
@@ -144,8 +145,6 @@ Loan.schema.virtual("totalRepaymentAmount").get(function (this: Loan) {
   return Math.round(totalRepayment * 100) / 100;
 });
 
-Loan.schema.virtual("auditTrailContext");
-
 Loan.schema.virtual("auditTrail", {
   ref: AuditTrail.collectionName,
   localField: "_id",
@@ -156,29 +155,80 @@ Loan.schema.virtual("auditTrail", {
   }
 });
 
-Loan.schema.pre("save", async function (next) {
-  const auditTrailRepository: IAuditTrailRepository = container.resolve("AuditTrailRepository");
-
-  const auditTrailContext = this.get("auditTrailContext");
-  console.log(auditTrailContext);
-  if (!auditTrailContext) {
-    throw new Error("Missing audit trail context");
+Loan.schema.methods.validateAgainstLoanProductRules = function (
+  this: Loan,
+  loanProduct: LoanProduct
+) {
+  if (this.amountRecommended > loanProduct.maxLoanAmount) {
+    return LoanExceptions.LoanAmountExceedsMaximum(loanProduct.maxLoanAmount);
   }
 
-  await auditTrailRepository.insert(
-    auditTrailContext.tenantId,
-    new AuditTrail(
-      this._id,
-      Loan.collectionName,
-      auditTrailContext.action,
-      auditTrailContext.performedBy,
-      this.isNew ? null : this._doc,
-      this.isNew ? null : this.toObject()
-    )
-  );
+  return null;
+};
 
-  next();
-});
+// // Pre-save hook to create audit trail when a loan doc is created or modified
+// Loan.schema.pre("save", async function (next) {
+//   const auditTrailRepository: IAuditTrailRepository = container.resolve("AuditTrailRepository");
+
+//   const auditTrailContext = this.get("auditTrailContext");
+//   console.log(auditTrailContext);
+//   if (!auditTrailContext) {
+//     throw new Error("Missing audit trail context");
+//   }
+
+//   await auditTrailRepository.insert(
+//     auditTrailContext.tenantId,
+//     new AuditTrail(
+//       this._id,
+//       Loan.collectionName,
+//       this.isNew ? AuditTrailAction.CREATED : AuditTrailAction.UPDATED,
+//       auditTrailContext.performedBy,
+//       this.isNew ? null : this._doc,
+//       this.isNew ? null : this.toObject()
+//     )
+//   );
+
+//   next();
+// });
+
+// // Pre-save hook to create audit trail when a loan doc is created or modified
+// Loan.schema.post("updateOne", { document: false, query: true }, async function (next) {
+//   const auditTrailRepository: IAuditTrailRepository = container.resolve("AuditTrailRepository");
+
+//   const auditTrailContext = this.get("auditTrailContext");
+//   console.log(auditTrailContext);
+//   // if (!auditTrailContext) {
+//   //   throw new Error("Missing audit trail context");
+//   // }
+
+//   // const isStatusModified = this.modifiedPaths().includes("status");
+//   const changes = {};
+//   // console.log(this.directModifiedPaths());
+//   // for (const field of this.modifiedPaths()) {
+//   //   console.log({ field });
+//   //   //@ts-expect-error string indexer
+//   //   changes[field] = this[field];
+//   // }
+//   // const originalDoc = await this.findOne(this.getQuery());
+//   console.log({ this: this });
+//   console.log(this.getUpdate());
+
+//   console.log(changes);
+
+//   // await auditTrailRepository.insert(
+//   //   auditTrailContext.tenantId,
+//   //   new AuditTrail(
+//   //     this._id,
+//   //     Loan.collectionName,
+//   //     isStatusModified ? AuditTrailAction.STATUS_CHANGED : AuditTrailAction.UPDATED,
+//   //     auditTrailContext.performedBy,
+//   //     this._doc,
+//   //     this.toObject()
+//   //   )
+//   // );
+
+//   // next();
+// });
 
 // Ensure virtual fields are included in JSON output
 Loan.schema.set("toJSON", { virtuals: true });
@@ -186,6 +236,8 @@ Loan.schema.set("toObject", { virtuals: true });
 
 export type HydratedLoanDocument = HydratedDocument<Loan, ILoanMethods>;
 
-export interface ILoanMethods {}
+export interface ILoanMethods {
+  validateAgainstLoanProductRules(loanProduct: LoanProduct): Exception | null;
+}
 
 export type LoanModel = Model<Loan, object, ILoanMethods>;

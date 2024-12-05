@@ -9,4 +9,18 @@ export class LoanExceptions {
     "Loan.InvalidLoanID",
     "Invalid Loan ID"
   );
+
+  public static readonly LoanAmountExceedsMaximum = (maxAmount: number) =>
+    new Exception(
+      ExceptionType.Validation,
+      "Loan.Amount.ExceedsMax",
+      `Loan amount must be less than or equal to ${maxAmount.toLocaleString("EN")}`
+    );
+
+  public static readonly LoanAmountBelowMinimum = (minAmount: number) =>
+    new Exception(
+      ExceptionType.Validation,
+      "Loan.Amount.BelowMin",
+      `Loan amount cannot be less than ${minAmount}`
+    );
 }

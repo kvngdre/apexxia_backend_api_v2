@@ -8,5 +8,5 @@ const loanController = container.resolve(LoanController);
 loanRouter.post("/", loanController.createLoan);
 loanRouter.get("/", loanController.getLoans);
 loanRouter.get("/:loanId", loanController.getLoanById);
-// loanRouter.patch("/:loanId", loanController.updateLoan);
+loanRouter.patch("/:loanId", loanController.updateLoan);
 // loanRouter.delete("/:loanId", loanController.deleteLoan);

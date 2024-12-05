@@ -34,7 +34,7 @@ export class AddressRepository implements IAddressRepository {
     changes: Partial<Address> = {},
     options?: { session: ClientSession }
   ): Promise<HydratedAddressDocument> {
-    return address.updateOne(Object.assign({ ...Address, _id: undefined }, changes), {
+    return address.updateOne(Object.assign({ ...address._doc, _id: undefined }, changes), {
       new: true,
       session: options?.session
     });

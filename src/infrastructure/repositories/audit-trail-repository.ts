@@ -34,7 +34,7 @@ export class AuditTrailRepository implements IAuditTrailRepository {
     changes: Partial<AuditTrail> = {},
     options?: { session: ClientSession }
   ): Promise<HydratedAuditTrailDocument> {
-    return auditTrail.updateOne(Object.assign({ ...auditTrail, _id: undefined }, changes), {
+    return auditTrail.updateOne(Object.assign({ ...auditTrail._doc, _id: undefined }, changes), {
       new: true,
       session: options?.session
     });

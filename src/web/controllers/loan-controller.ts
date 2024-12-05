@@ -5,6 +5,7 @@ import { GetLoansQuery } from "@application/features/loans/queries/get-loans";
 import { CreateLoanCommand } from "@application/features/loans/commands/create-loan";
 import { HttpStatus } from "@web/web-infrastructure";
 import { GetLoanByIdQuery } from "@application/features/loans/queries/get-loan-by-id";
+import { UpdateLoanCommand } from "@application/features/loans/commands/update-loan";
 
 @scoped(Lifecycle.ResolutionScoped)
 export class LoanController extends BaseController {
@@ -44,6 +45,25 @@ export class LoanController extends BaseController {
     const result = await this.sender.send(command);
 
     const { code, payload } = this.buildHttpResponse(result, res, { code: HttpStatus.CREATED });
+
+    res.status(code).json(payload);
+  };
+
+  public readonly updateLoan = async (
+    req: Request<{ loanId: string }, object, UpdateLoanCommand>,
+    res: Response
+  ) => {
+    const command = new UpdateLoanCommand(
+      req.tenant!,
+      req.authenticatedUser!,
+      req.params.loanId,
+      req.body.loanAmount,
+      req.body.loanTenureInMonths
+    );
+
+    const result = await this.sender.send(command);
+
+    const { code, payload } = this.buildHttpResponse(result, res);
 
     res.status(code).json(payload);
   };

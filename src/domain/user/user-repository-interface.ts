@@ -21,3 +21,11 @@ export interface IUserRepository {
   ): Promise<HydratedUserDocument>;
   delete(user: HydratedUserDocument, options?: { session: ClientSession }): Promise<void>;
 }
+
+export interface UpdateReturnType {
+  acknowledged: boolean;
+  modifiedCount: number;
+  upsertedId: string | null;
+  upsertedCount: number;
+  matchedCount: number;
+}

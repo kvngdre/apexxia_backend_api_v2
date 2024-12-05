@@ -7,11 +7,12 @@ import { ILoanRepository, Loan } from "@domain/loan";
 import { ILoanProductRepository, LoanProductExceptions } from "@domain/loan-product";
 import { CreateLoanCommandValidator } from "./create-loan-command-validator";
 import { CustomerExceptions, ICustomerRepository } from "@domain/customer";
-import { AuditTrailAction } from "@domain/audit-trail/audit-trail-action-enum";
-import { ApplicationDbContext } from "@infrastructure/database";
+import { Publisher } from "@infrastructure/pubsub/publisher";
+import { LoanCreatedDomainEvent } from "@domain/loan/domain-events";
 
 @scoped(Lifecycle.ResolutionScoped)
 export class CreateLoanCommandHandler
+  extends Publisher
   implements IRequestHandler<CreateLoanCommand, LoanResponseDto>
 {
   constructor(
@@ -19,9 +20,10 @@ export class CreateLoanCommandHandler
     @inject("CustomerRepository") private readonly _customerRepository: ICustomerRepository,
     @inject("CreateLoanCommandValidator") private readonly _validator: CreateLoanCommandValidator,
     @inject("LoanProductRepository")
-    private readonly _loanProductRepository: ILoanProductRepository,
-    private readonly _appDbContext: ApplicationDbContext
-  ) {}
+    private readonly _loanProductRepository: ILoanProductRepository
+  ) {
+    super();
+  }
 
   public async handle(command: CreateLoanCommand): Promise<ResultType<LoanResponseDto>> {
     const { isFailure, exception, value } = await this._validator.validate(command);
@@ -48,15 +50,12 @@ export class CreateLoanCommandHandler
       value.loanProductId,
       value.loanAmount,
       value.loanTenureInMonths,
-      loanProduct.interestRateInPercentage,
-      {
-        tenantId: value.tenant._id.toString(),
-        performedBy: value.user._id.toString(),
-        action: AuditTrailAction.CREATED
-      }
+      loanProduct.interestRateInPercentage
     );
 
     await this._loanRepository.insert(value.tenant._id, loan);
+
+    this.raiseDomainEvent(new LoanCreatedDomainEvent(value.tenant, loan, value.user._id));
 
     return Result.success("Loan Created", LoanResponseDto.from(loan));
   }

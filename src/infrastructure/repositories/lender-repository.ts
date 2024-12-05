@@ -32,7 +32,7 @@ export class LenderRepository implements ILenderRepository {
     changes: Partial<Lender> = {},
     options?: { session: ClientSession }
   ): Promise<HydratedLenderDocument> {
-    return lender.updateOne(Object.assign({ ...Lender, _id: undefined }, changes), {
+    return lender.updateOne(Object.assign({ ...lender._doc, _id: undefined }, changes), {
       new: true,
       session: options?.session
     });

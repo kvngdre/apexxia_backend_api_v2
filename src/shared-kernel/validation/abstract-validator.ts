@@ -1,6 +1,6 @@
 import joi from "joi";
+import { omitBy, isUndefined } from "lodash";
 import { ValidationException } from "../validation-exception";
-import { Utils } from "../utils";
 
 export abstract class AbstractValidator<TRequest extends object> {
   abstract validate(
@@ -14,7 +14,7 @@ export abstract class AbstractValidator<TRequest extends object> {
       return {
         isSuccess: true,
         isFailure: false,
-        value: Utils.omitUndefinedFields(result.value) as TRequest
+        value: omitBy(result.value, isUndefined) as TRequest
       };
     }
 

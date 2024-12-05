@@ -13,6 +13,6 @@ export class GetLoanByIdQueryHandler implements IRequestHandler<GetLoanByIdQuery
     const loan = await this._loanRepository.findById(query.tenant._id, query.loanId);
     if (!loan) return Result.failure(LoanExceptions.NotFound);
 
-    return Result.success("Retrieved loans successfully", LoanResponseDto.from(loan));
+    return Result.success("Retrieved loan successfully", LoanResponseDto.from(loan));
   }
 }

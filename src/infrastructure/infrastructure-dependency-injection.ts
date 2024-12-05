@@ -29,6 +29,7 @@ import { ICustomerRepository } from "@domain/customer";
 import { IAddressRepository } from "@domain/address";
 import { ILoanRepository } from "@domain/loan";
 import { IAuditTrailRepository } from "@domain/audit-trail";
+import { PubSub } from "./pubsub/pubsub";
 
 export function registerInfrastructureServices() {
   container.registerSingleton<ILogger>("Logger", Logger);
@@ -37,6 +38,7 @@ export function registerInfrastructureServices() {
   container.registerSingleton<ConnectionManager>("ConnectionManager", ConnectionManager);
   container.registerSingleton<RedisService>("RedisService", RedisService);
   container.registerSingleton<IMediator>("Mediator", Mediator);
+  container.registerSingleton(PubSub);
   container.registerSingleton<IJwtService>("JwtService", JwtService);
 
   container.register<ITenantRepository>("TenantRepository", TenantRepository);

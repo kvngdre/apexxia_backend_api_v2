@@ -10,13 +10,14 @@ export class LoanRepository implements ILoanRepository {
   public async findById(tenantId: string, loanId: string): Promise<HydratedLoanDocument | null> {
     return (await this._dbContext.loans(tenantId))
       .findById(loanId)
-      .populate({ path: "auditTrail", strictPopulate: false });
+      .populate({ path: "auditTrail", strictPopulate: true });
   }
 
   public async find(tenantId: string): Promise<HydratedLoanDocument[]> {
     return (await this._dbContext.loans(tenantId))
       .find()
-      .populate({ path: "auditTrail", strictPopulate: false });
+      .populate({ path: "auditTrail", strictPopulate: false })
+      .sort({ createdAt: -1 });
   }
 
   public async insert(
@@ -33,7 +34,7 @@ export class LoanRepository implements ILoanRepository {
     changes: Partial<Loan> = {},
     options?: { session: ClientSession }
   ): Promise<HydratedLoanDocument> {
-    return loan.updateOne(Object.assign({ ...Loan, _id: undefined }, changes), {
+    return loan.updateOne(Object.assign({ ...loan._doc, _id: undefined }, changes), {
       new: true,
       session: options?.session
     });

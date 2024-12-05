@@ -6,6 +6,7 @@ import { GetUserByIdQuery } from "@application/features/users/queries/get-user-b
 import { GetUsersQuery } from "@application/features/users/queries/get-users";
 import { CreateUserCommand } from "@application/features/users/commands/create-user";
 import { HttpStatus } from "@web/web-infrastructure";
+import { UpdateUserCommand } from "@application/features/users/commands/update-user";
 
 @scoped(Lifecycle.ResolutionScoped)
 export class UserController extends BaseController {
@@ -52,6 +53,27 @@ export class UserController extends BaseController {
     const result = await this.sender.send(command);
 
     const { code, payload } = this.buildHttpResponse(result, res, { code: HttpStatus.CREATED });
+
+    res.status(code).json(payload);
+  };
+
+  public updateUser = async (
+    req: Request<{ userId: string }, object, UpdateUserCommand>,
+    res: Response
+  ) => {
+    const command = new UpdateUserCommand(
+      req.tenant!,
+      req.authenticatedUser!,
+      req.params.userId,
+      req.body.firstName,
+      req.body.middleName,
+      req.body.lastName,
+      req.body.jobTitle
+    );
+
+    const result = await this.sender.send(command);
+
+    const { code, payload } = this.buildHttpResponse(result, res);
 
     res.status(code).json(payload);
   };

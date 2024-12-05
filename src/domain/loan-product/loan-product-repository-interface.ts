@@ -4,7 +4,7 @@ import { HydratedLoanProductDocument, LoanProduct } from "./loan-product-entity"
 export interface ILoanProductRepository {
   findById(
     tenantId: Types.ObjectId | string,
-    loanProductId: string
+    loanProductId: Types.ObjectId | string
   ): Promise<HydratedLoanProductDocument | null>;
   find(tenantId: Types.ObjectId | string): Promise<HydratedLoanProductDocument[]>;
   insert(
