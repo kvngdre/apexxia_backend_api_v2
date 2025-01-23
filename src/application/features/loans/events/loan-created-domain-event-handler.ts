@@ -22,6 +22,6 @@ export class LoanCreatedDomainEventHandler implements IDomainEventHandler<LoanCr
       event.loan
     );
 
-    await this._auditTrailRepository.insert(event.tenant._id, auditTrail);
+    await this._auditTrailRepository.insert(event.tenantId, auditTrail);
   }
 }

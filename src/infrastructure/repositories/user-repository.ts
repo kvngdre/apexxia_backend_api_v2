@@ -7,28 +7,28 @@ import { ApplicationDbContext } from "@infrastructure/database/application-db-co
 export class UserRepository implements IUserRepository {
   constructor(private readonly _dbContext: ApplicationDbContext) {}
 
-  public async findById(tenantId: string, userId: string): Promise<HydratedUserDocument | null> {
-    return (await this._dbContext.users(tenantId)).findById(userId);
+  public async findById(lenderId: string, userId: string): Promise<HydratedUserDocument | null> {
+    return (await this._dbContext.users(lenderId)).findById(userId);
   }
 
   public async findByEmail(
-    tenantId: string,
+    lenderId: string,
     email: string,
     options?: { session?: ClientSession }
   ): Promise<HydratedUserDocument | null> {
-    return (await this._dbContext.users(tenantId)).findOne({ email });
+    return (await this._dbContext.users(lenderId)).findOne({ email });
   }
 
-  public async find(tenantId: string): Promise<HydratedUserDocument[]> {
-    return (await this._dbContext.users(tenantId)).find();
+  public async find(lenderId: string): Promise<HydratedUserDocument[]> {
+    return (await this._dbContext.users(lenderId)).find();
   }
 
   public async insert(
-    tenantId: string,
+    lenderId: string,
     user: User,
     options?: { session: ClientSession }
   ): Promise<HydratedUserDocument> {
-    const [newUser] = await (await this._dbContext.users(tenantId)).create([user], options);
+    const [newUser] = await (await this._dbContext.users(lenderId)).create([user], options);
     return newUser!;
   }
 

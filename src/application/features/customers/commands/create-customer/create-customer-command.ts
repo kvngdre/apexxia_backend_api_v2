@@ -22,6 +22,7 @@ export class CreateCustomerCommand implements IRequest<CustomerResponseDto> {
     public readonly idNumber: string,
     public readonly idExpiration: Date,
     public readonly nextOfKin: INextOfKin,
+    public readonly income: number,
     public readonly accountName: string,
     public readonly accountNumber: string,
     public readonly bank: string

@@ -1,4 +1,4 @@
-import { HydratedDocument, Model, Schema } from "mongoose";
+import { HydratedDocument, Model, Schema, Types } from "mongoose";
 import { Entity } from "@shared-kernel/entity";
 
 export class Tenant extends Entity {
@@ -6,6 +6,8 @@ export class Tenant extends Entity {
 
   public static readonly schema = new Schema<Tenant, TenantModel, ITenantMethods>(
     {
+      lenderId: { type: Schema.Types.ObjectId, required: true },
+
       name: {
         type: String,
         required: true
@@ -37,6 +39,7 @@ export class Tenant extends Entity {
   );
 
   constructor(
+    public readonly lenderId: Types.ObjectId,
     public readonly name: string,
     public subdomain: string,
     public email: string,

@@ -9,6 +9,7 @@ import {
   idExpirationRule,
   idNumberRule,
   idTypeRule,
+  incomeRule,
   latitudeRule,
   longitudeRule,
   maritalStatusRule,
@@ -78,6 +79,7 @@ export class CreateCustomerCommandValidator extends AbstractValidator<CreateCust
           relationship: relationshipRule.label("Next of kin relationship").required()
         })
         .required(),
+      income: incomeRule.required(),
       accountName: nameRule.label("Account name").required(),
       accountNumber: bankAccountNumberRule.required(),
       bank: nameRule.label("Bank").max(50)

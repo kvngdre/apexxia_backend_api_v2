@@ -1,15 +1,15 @@
 import { Router } from "express";
 import { container } from "tsyringe";
-import { systemRouter } from "./system-router";
-import { authRouter } from "./auth-router";
-import { lenderRouter } from "./lender-router";
-import { userRouter } from "./user.router";
+import { systemRouter } from "./system-routes";
+import { authRouter } from "./auth-routes";
+import { lenderRouter } from "./lender-routes";
+import { userRouter } from "./user-routes";
 import { AuthenticateUserMiddleware, ResolveTenantMiddleware } from "@web/middleware";
-import { sessionRouter } from "./session-router";
-import { loanProductRouter } from "./loan-product-router";
-import { tenantRouter } from "./tenant-router";
-import { customerRouter } from "./customer-router";
-import { loanRouter } from "./loan-router";
+import { sessionRouter } from "./session-routes";
+import { loanProductRouter } from "./loan-product-routes";
+import { tenantRouter } from "./tenant-routes";
+import { customerRouter } from "./customer-routes";
+import { loanRouter } from "./loan-routes";
 
 const apiRouter = Router();
 const resolveTenantMiddleware = container.resolve(ResolveTenantMiddleware).execute;
@@ -25,9 +25,9 @@ apiRouter.use(
   loanProductRouter
 );
 apiRouter.use("/loans", resolveTenantMiddleware, authenticateUserMiddleware, loanRouter);
-apiRouter.use("/sessions", resolveTenantMiddleware, authenticateUserMiddleware, sessionRouter);
+apiRouter.use("/sessions", authenticateUserMiddleware, sessionRouter);
 apiRouter.use("/system", systemRouter);
 apiRouter.use("/tenants", tenantRouter);
-apiRouter.use("/users", resolveTenantMiddleware, authenticateUserMiddleware, userRouter);
+apiRouter.use("/users", authenticateUserMiddleware, userRouter);
 
 export default apiRouter;

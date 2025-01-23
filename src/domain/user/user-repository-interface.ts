@@ -2,15 +2,15 @@ import { ClientSession, Types } from "mongoose";
 import { HydratedUserDocument, User } from "./user-entity";
 
 export interface IUserRepository {
-  findById(tenantId: Types.ObjectId | string, userId: string): Promise<HydratedUserDocument | null>;
+  findById(lenderId: Types.ObjectId | string, userId: string): Promise<HydratedUserDocument | null>;
   findByEmail(
-    tenantId: Types.ObjectId | string,
+    lenderId: Types.ObjectId | string,
     email: string,
     options?: { session?: ClientSession }
   ): Promise<HydratedUserDocument | null>;
-  find(tenantId: Types.ObjectId | string): Promise<HydratedUserDocument[]>;
+  find(lenderId: Types.ObjectId | string): Promise<HydratedUserDocument[]>;
   insert(
-    tenantId: Types.ObjectId | string,
+    lenderId: Types.ObjectId | string,
     user: User,
     options?: { session: ClientSession }
   ): Promise<HydratedUserDocument>;
@@ -20,12 +20,4 @@ export interface IUserRepository {
     options?: { session: ClientSession }
   ): Promise<HydratedUserDocument>;
   delete(user: HydratedUserDocument, options?: { session: ClientSession }): Promise<void>;
-}
-
-export interface UpdateReturnType {
-  acknowledged: boolean;
-  modifiedCount: number;
-  upsertedId: string | null;
-  upsertedCount: number;
-  matchedCount: number;
 }

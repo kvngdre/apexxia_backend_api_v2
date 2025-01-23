@@ -34,9 +34,13 @@ export class SignupCommandHandler
       return Result.failure(TenantExceptions.DuplicateSubdomain);
     }
 
-    // Simulating provisioning database and creating tenant...
+    // create lender
+    const lender = new Lender(value.lenderName, LenderStatus.ONBOARDING);
+
+    // ! Simulating provisioning database and creating tenant...
     const subdomain = value.subdomain.toLowerCase();
     const tenant = new Tenant(
+      lender._id,
       value.lenderName,
       subdomain,
       value.email,
@@ -44,18 +48,8 @@ export class SignupCommandHandler
       `mongodb+srv://<user>:<password>@cluster0.3wvau.mongodb.net/${subdomain}_db?retryWrites=true&w=majority`
     );
 
-    await this._tenantRepository.insert(tenant);
-
-    // create lender
-    const lender = new Lender(tenant._id, value.lenderName, LenderStatus.ONBOARDING);
-
     // create user
     const temporaryPassword = Utils.generateRandomPassword(8);
-
-    // console.log({ temporaryPassword });
-
-    // throw new Error("zdf");
-
     const user = new User(
       lender._id,
       value.firstName,
@@ -65,11 +59,12 @@ export class SignupCommandHandler
       UserStatus.ONBOARDING
     );
 
-    // save
+    // start transaction
     const session = await this._appDbContext.startTransactionSession(tenant._id.toString());
 
     try {
       await session.withTransaction(async () => {
+        await this._tenantRepository.insert(tenant, { session });
         await this._lenderRepository.insert(tenant.id, lender, { session });
         await this._userRepository.insert(tenant.id, user, { session });
 

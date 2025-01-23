@@ -43,6 +43,8 @@ export const idNumberRule = Joi.string().label("Id Number").trim().max(16);
 
 export const idTypeRule = JoiStringEnum.string().label("Id Type").enum(IdType).trim();
 
+export const incomeRule = Joi.number().label("Income").precision(2).min(-9_999_999).max(10_000_000);
+
 export const lenderNameRule = Joi.string()
   .label("Lender name")
   .trim()

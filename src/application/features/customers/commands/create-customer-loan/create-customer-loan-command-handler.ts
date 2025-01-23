@@ -1,19 +1,19 @@
 import { inject, Lifecycle, scoped } from "tsyringe";
 import { IRequestHandler } from "@infrastructure/mediator";
-import { CreateLoanCommand } from "./create-loan-command";
-import { LoanResponseDto } from "../../shared";
+import { CreateCustomerLoanCommand } from "./create-customer-loan-command";
+import { LoanResponseDto } from "@application/features/loans/shared";
 import { Result, ResultType } from "@shared-kernel/result";
-import { ILoanRepository, Loan } from "@domain/loan";
-import { ILoanProductRepository, LoanProductExceptions } from "@domain/loan-product";
-import { CreateLoanCommandValidator } from "./create-loan-command-validator";
-import { CustomerExceptions, ICustomerRepository } from "@domain/customer";
 import { Publisher } from "@infrastructure/pubsub/publisher";
+import { ILoanRepository, Loan } from "@domain/loan";
+import { CustomerExceptions, ICustomerRepository } from "@domain/customer";
+import { CreateLoanCommandValidator } from "@application/features/loans/commands/create-loan/create-loan-command-validator";
+import { ILoanProductRepository, LoanProductExceptions } from "@domain/loan-product";
 import { LoanCreatedDomainEvent } from "@domain/loan/domain-events";
 
 @scoped(Lifecycle.ResolutionScoped)
-export class CreateLoanCommandHandler
+export class CreateCustomerLoanCommandHandler
   extends Publisher
-  implements IRequestHandler<CreateLoanCommand, LoanResponseDto>
+  implements IRequestHandler<CreateCustomerLoanCommand, LoanResponseDto>
 {
   constructor(
     @inject("LoanRepository") private readonly _loanRepository: ILoanRepository,
@@ -25,7 +25,7 @@ export class CreateLoanCommandHandler
     super();
   }
 
-  public async handle(command: CreateLoanCommand): Promise<ResultType<LoanResponseDto>> {
+  public async handle(command: CreateCustomerLoanCommand): Promise<ResultType<LoanResponseDto>> {
     const { isFailure, exception, value } = await this._validator.validate(command);
     if (isFailure) return Result.failure(exception);
 

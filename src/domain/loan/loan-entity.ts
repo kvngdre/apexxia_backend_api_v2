@@ -8,7 +8,7 @@ import { LoanStatus } from "./loan-status-enum";
 import { AuditTrail, IAuditTrailRepository } from "@domain/audit-trail";
 import { AuditTrailAction } from "@domain/audit-trail/audit-trail-action-enum";
 import { LoanExceptions } from "./loan-exceptions";
-import { Exception } from "@shared-kernel/exception";
+import { User } from "@domain/user";
 
 export class Loan extends Entity {
   public static readonly collectionName = "Loan";
@@ -93,6 +93,22 @@ export class Loan extends Entity {
       //     },
       //   ],
 
+      analysedBy: {
+        type: Schema.Types.ObjectId,
+        ref: User.collectionName,
+        default: null
+      },
+
+      analysedAt: {
+        type: Date,
+        default: null
+      },
+
+      analysisNotes: {
+        type: String,
+        default: null
+      },
+
       createdAt: Date,
 
       updatedAt: Date
@@ -106,7 +122,8 @@ export class Loan extends Entity {
     public loanProductId: Types.ObjectId | string,
     public amountRequested: number,
     public tenureInMonthsRequested: number,
-    public interestRateInPercentage: number
+    public interestRateInPercentage: number,
+    public customerIncome: number
   ) {
     super();
     this.amountRecommended = this.amountRequested;
@@ -119,10 +136,14 @@ export class Loan extends Entity {
   public repaymentEndDate: Date;
   public repaymentAmount: number;
   public totalRepaymentAmount: number;
+  public percentageDTI: number;
   public status: LoanStatus = LoanStatus.NEW;
   public parentLoanId: Types.ObjectId | null = null;
   public isTopUp: boolean = false;
   public auditTrail: AuditTrail[] = [];
+  public analysedBy: Types.ObjectId | string | null = null;
+  public analysedAt: Date | null = null;
+  public analysisNotes: string | null = null;
   public _doc: Loan;
   public customer?: Customer;
   public lender?: Lender;
@@ -145,6 +166,13 @@ Loan.schema.virtual("totalRepaymentAmount").get(function (this: Loan) {
   return Math.round(totalRepayment * 100) / 100;
 });
 
+Loan.schema.virtual("percentageDTI").get(function (this: Loan) {
+  const totalRepayment = this.repaymentAmount * this.tenureInMonthsRecommended;
+
+  // Rounding to two decimal places
+  return Math.round(totalRepayment * 100) / 100;
+});
+
 Loan.schema.virtual("auditTrail", {
   ref: AuditTrail.collectionName,
   localField: "_id",
@@ -155,41 +183,89 @@ Loan.schema.virtual("auditTrail", {
   }
 });
 
-Loan.schema.methods.validateAgainstLoanProductRules = function (
-  this: Loan,
-  loanProduct: LoanProduct
-) {
-  if (this.amountRecommended > loanProduct.maxLoanAmount) {
-    return LoanExceptions.LoanAmountExceedsMaximum(loanProduct.maxLoanAmount);
+Loan.schema.methods.checkLoanProductCompliance = function (this: Loan, loanProduct: LoanProduct) {
+  const exceptions = [];
+
+  // Validating the RECOMMENDED loan amount
+  if (this.amountRecommended < loanProduct.minLoanAmount) {
+    exceptions.push(LoanExceptions.LoanAmountBelowMinimum(loanProduct.minLoanAmount));
+  } else if (this.amountRecommended > loanProduct.maxLoanAmount) {
+    exceptions.push(LoanExceptions.LoanAmountExceedsMaximum(loanProduct.maxLoanAmount));
   }
 
-  return null;
+  // Validating the RECOMMENDED loan tenure
+  if (this.tenureInMonthsRecommended < loanProduct.minTenureInMonths) {
+    exceptions.push(LoanExceptions.LoanTenureBelowMinimum(loanProduct.minTenureInMonths));
+  } else if (this.tenureInMonthsRecommended > loanProduct.maxTenureInMonths) {
+    exceptions.push(LoanExceptions.LoanTenureExceedsMaximum(loanProduct.maxTenureInMonths));
+  }
+
+  // Validating the D.T.I
+  if (this.percentageDTI > loanProduct.maxDTIInPercentage) {
+    exceptions.push(LoanExceptions.DTIGreaterThanMaximum(loanProduct.maxDTIInPercentage));
+  }
+
+  return exceptions;
 };
 
-// // Pre-save hook to create audit trail when a loan doc is created or modified
-// Loan.schema.pre("save", async function (next) {
-//   const auditTrailRepository: IAuditTrailRepository = container.resolve("AuditTrailRepository");
+Loan.schema.post("updateOne", { document: false, query: true }, async function () {
+  const auditTrailRepository: IAuditTrailRepository = container.resolve("AuditTrailRepository");
 
-//   const auditTrailContext = this.get("auditTrailContext");
-//   console.log(auditTrailContext);
-//   if (!auditTrailContext) {
-//     throw new Error("Missing audit trail context");
+  const auditTrailContext = this.get("auditTrailContext");
+  if (!auditTrailContext) {
+    throw new Error("Missing audit trail context");
+  }
+
+  const changes = this.getUpdate();
+
+  await auditTrailRepository.insert(
+    auditTrailContext.tenantId,
+    new AuditTrail(
+      this.getQuery()._id,
+      Loan.collectionName,
+      AuditTrailAction.UPDATED,
+      auditTrailContext.performedBy,
+      null,
+      changes
+    )
+  );
+});
+
+// Loan.schema.methods.checkLoanProductCompliance = function (
+//   this: LoanProduct,
+//   customer: Customer,
+//   loanProduct: LoanProduct
+// ) {
+//   const exceptions = [];
+
+//   // Validating the RECOMMENDED loan amount
+//   if (loan.amountRecommended < this.minLoanAmount) {
+//     exceptions.push(LoanExceptions.LoanAmountBelowMinimum(this.minLoanAmount));
+//   } else if (loan.amountRecommended > this.maxLoanAmount) {
+//     exceptions.push(LoanExceptions.LoanAmountExceedsMaximum(this.maxLoanAmount));
 //   }
 
-//   await auditTrailRepository.insert(
-//     auditTrailContext.tenantId,
-//     new AuditTrail(
-//       this._id,
-//       Loan.collectionName,
-//       this.isNew ? AuditTrailAction.CREATED : AuditTrailAction.UPDATED,
-//       auditTrailContext.performedBy,
-//       this.isNew ? null : this._doc,
-//       this.isNew ? null : this.toObject()
-//     )
-//   );
+//   // Validating the RECOMMENDED loan tenure
+//   if (loan.tenureInMonthsRecommended < this.minTenureInMonths) {
+//     exceptions.push(LoanExceptions.LoanTenureBelowMinimum(this.minTenureInMonths));
+//   } else if (loan.tenureInMonthsRecommended > this.maxTenureInMonths) {
+//     exceptions.push(LoanExceptions.LoanTenureExceedsMaximum(this.maxTenureInMonths));
+//   }
 
-//   next();
-// });
+//   // Validating the D.T.I
+//   if (loan.percentageDTI > this.maxDTIInPercentage) {
+//     exceptions.push(LoanExceptions.DTIGreaterThanMaximum(this.maxDTIInPercentage));
+//   }
+
+//   // Validating Customer Income
+//   if (customer.income < this.minIncome) {
+//     exceptions.push(CustomerExceptions.IncomeBelowMinimum(this.minIncome));
+//   } else if (customer.income > this.maxIncome) {
+//     exceptions.push(CustomerExceptions.IncomeExceedsMaximum(this.maxIncome));
+//   }
+
+//   return exceptions;
+// };
 
 // // Pre-save hook to create audit trail when a loan doc is created or modified
 // Loan.schema.post("updateOne", { document: false, query: true }, async function (next) {
@@ -197,37 +273,37 @@ Loan.schema.methods.validateAgainstLoanProductRules = function (
 
 //   const auditTrailContext = this.get("auditTrailContext");
 //   console.log(auditTrailContext);
-//   // if (!auditTrailContext) {
-//   //   throw new Error("Missing audit trail context");
-//   // }
+// if (!auditTrailContext) {
+//   throw new Error("Missing audit trail context");
+// }
 
-//   // const isStatusModified = this.modifiedPaths().includes("status");
-//   const changes = {};
-//   // console.log(this.directModifiedPaths());
-//   // for (const field of this.modifiedPaths()) {
-//   //   console.log({ field });
-//   //   //@ts-expect-error string indexer
-//   //   changes[field] = this[field];
-//   // }
-//   // const originalDoc = await this.findOne(this.getQuery());
+// const isStatusModified = this.modifiedPaths().includes("status");
+// const changes = {};
+// console.log(this.directModifiedPaths());
+// for (const field of this.modifiedPaths()) {
+//   console.log({ field });
+//   //@ts-expect-error string indexer
+//   changes[field] = this[field];
+// }
+// const originalDoc = await this.findOne(this.getQuery());
 //   console.log({ this: this });
 //   console.log(this.getUpdate());
 
 //   console.log(changes);
 
-//   // await auditTrailRepository.insert(
-//   //   auditTrailContext.tenantId,
-//   //   new AuditTrail(
-//   //     this._id,
-//   //     Loan.collectionName,
-//   //     isStatusModified ? AuditTrailAction.STATUS_CHANGED : AuditTrailAction.UPDATED,
-//   //     auditTrailContext.performedBy,
-//   //     this._doc,
-//   //     this.toObject()
-//   //   )
-//   // );
+// await auditTrailRepository.insert(
+//   auditTrailContext.tenantId,
+//   new AuditTrail(
+//     this._id,
+//     Loan.collectionName,
+//     isStatusModified ? AuditTrailAction.STATUS_CHANGED : AuditTrailAction.UPDATED,
+//     auditTrailContext.performedBy,
+//     this._doc,
+//     this.toObject()
+//   )
+// );
 
-//   // next();
+// next();
 // });
 
 // Ensure virtual fields are included in JSON output
@@ -237,7 +313,7 @@ Loan.schema.set("toObject", { virtuals: true });
 export type HydratedLoanDocument = HydratedDocument<Loan, ILoanMethods>;
 
 export interface ILoanMethods {
-  validateAgainstLoanProductRules(loanProduct: LoanProduct): Exception | null;
+  checkLoanProductCompliance(this: Loan, loanProduct: LoanProduct): LoanExceptions[];
 }
 
 export type LoanModel = Model<Loan, object, ILoanMethods>;

@@ -23,6 +23,6 @@ export class LoanUpdatedDomainEventHandler implements IDomainEventHandler<LoanUp
       event.newData
     );
 
-    await this._auditTrailRepository.insert(event.tenant._id, auditTrail);
+    await this._auditTrailRepository.insert(event.tenantId, auditTrail);
   }
 }

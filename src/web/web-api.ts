@@ -10,7 +10,7 @@ import {
   ResourceNotFoundMiddleware
 } from "./middleware";
 import { Logger } from "@infrastructure/logging/logger";
-import apiRouter from "./routers";
+import apiRouter from "./routes";
 
 export default class WebAPI {
   private readonly _options: IWebAPIOptions;

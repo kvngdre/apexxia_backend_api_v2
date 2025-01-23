@@ -49,7 +49,7 @@ export class UpdateLoanCommandHandler
 
     this.raiseDomainEvent(
       new LoanUpdatedDomainEvent(
-        value.tenant,
+        value.tenant._id,
         value.user._id,
         { ...loan._doc },
         { ...loan._doc, ...changes }

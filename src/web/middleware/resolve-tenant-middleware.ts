@@ -41,12 +41,12 @@ export class ResolveTenantMiddleware extends AbstractMiddleware {
         }
 
         await this._redisService.set(
-          `tenant:subdomain:${subdomain}`,
+          `lender:subdomain:${subdomain}`,
           JSON.stringify(tenant),
           86400
         );
 
-        await this._redisService.set(`tenant:${tenant.id}`, JSON.stringify(tenant), 86400);
+        await this._redisService.set(`lender:${tenant.id}`, JSON.stringify(tenant), 86400);
       }
 
       // Populate tenant information on the request object

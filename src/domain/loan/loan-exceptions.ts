@@ -23,4 +23,25 @@ export class LoanExceptions {
       "Loan.Amount.BelowMin",
       `Loan amount cannot be less than ${minAmount}`
     );
+
+  public static readonly LoanTenureExceedsMaximum = (maxTenure: number) =>
+    new Exception(
+      ExceptionType.Validation,
+      "Loan.Tenure.ExceedsMax",
+      `Loan tenure must be less than or equal to ${maxTenure} months.`
+    );
+
+  public static readonly LoanTenureBelowMinimum = (minTenure: number) =>
+    new Exception(
+      ExceptionType.Validation,
+      "Loan.Tenure.BelowMin",
+      `Loan tenure cannot be less than ${minTenure} months.`
+    );
+
+  public static readonly DTIGreaterThanMaximum = (maxDTI: number) =>
+    new Exception(
+      ExceptionType.Validation,
+      "Loan.DTI.ExceedsMax",
+      `Debt To Income ratio must be less than or equal to ${maxDTI}%.`
+    );
 }

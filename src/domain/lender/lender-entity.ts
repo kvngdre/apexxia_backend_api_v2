@@ -9,11 +9,6 @@ export class Lender extends Entity {
 
   public static readonly schema = new Schema<Lender, LenderModel, ILenderMethods>(
     {
-      tenantId: {
-        type: Schema.Types.ObjectId,
-        required: true
-      },
-
       name: {
         type: String,
         required: true
@@ -121,7 +116,7 @@ export class Lender extends Entity {
   );
 
   constructor(
-    public tenantId: Types.ObjectId | string,
+    // public tenantId: Types.ObjectId | string,
     public name: string,
     public status: LenderStatus = LenderStatus.NEW
   ) {

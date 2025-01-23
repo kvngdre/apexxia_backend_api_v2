@@ -122,10 +122,10 @@ export class Customer extends Entity {
       //     required: true
       //   },
 
-      //   income: {
-      //     type: Number,
-      //     required: true
-      //   },
+      income: {
+        type: Number,
+        required: true
+      },
 
       nextOfKin: {
         type: {
@@ -172,6 +172,7 @@ export class Customer extends Entity {
     public idNumber: string,
     public idExpiration: Date,
     public nextOfKin: INextOfKin,
+    public income: number,
     public accountName: string,
     public accountNumber: string,
     public bank: string

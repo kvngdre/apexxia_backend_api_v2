@@ -40,14 +40,14 @@ export class ApplicationDbContext {
   }
 
   // Get tenant-specific database connection and synchronize entities.
-  public async getTenantDBConnection(tenantId: string): Promise<mongoose.Connection> {
-    let tenant: Tenant = JSON.parse((await this._redisService.get(`tenant:${tenantId}`))!);
+  public async getTenantDBConnection(lenderId: string): Promise<mongoose.Connection> {
+    let tenant: Tenant = JSON.parse((await this._redisService.get(`lender:${lenderId}`))!);
 
     // if cache miss, make call to DB
     if (!tenant) {
-      const foundTenant = await this._centralDbContext.getTenant(tenantId);
+      const foundTenant = await this._centralDbContext.getTenant(lenderId);
       if (!foundTenant) {
-        throw new Error(`Failed to locate tenant ${tenantId} configurations`);
+        throw new Error(`Failed to locate tenant ${lenderId} configurations`);
       }
 
       tenant = foundTenant;
@@ -57,7 +57,7 @@ export class ApplicationDbContext {
       .replace("<user>", process.env.DB_USER)
       .replace("<password>", process.env.DB_PASSWORD);
 
-    const connection = this._connectionManager.getTenantDatabaseConnection(tenantId, connectionURI);
+    const connection = this._connectionManager.getTenantDatabaseConnection(lenderId, connectionURI);
     this.synchronize(connection);
 
     return connection;

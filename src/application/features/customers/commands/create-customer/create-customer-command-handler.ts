@@ -7,9 +7,11 @@ import { CreateCustomerCommandValidator } from "./create-customer-command-valida
 import { Customer, CustomerExceptions, ICustomerRepository } from "@domain/customer";
 import { Address, IAddressRepository } from "@domain/address";
 import { ApplicationDbContext } from "@infrastructure/database";
+import { Publisher } from "@infrastructure/pubsub/publisher";
 
 @scoped(Lifecycle.ResolutionScoped)
 export class CreateCustomerCommandHandler
+  extends Publisher
   implements IRequestHandler<CreateCustomerCommand, CustomerResponseDto>
 {
   constructor(
@@ -17,7 +19,9 @@ export class CreateCustomerCommandHandler
     private readonly _validator: CreateCustomerCommandValidator,
     @inject("AddressRepository") private readonly _addressRepository: IAddressRepository,
     @inject("CustomerRepository") private readonly _customerRepository: ICustomerRepository
-  ) {}
+  ) {
+    super();
+  }
 
   public async handle(command: CreateCustomerCommand): Promise<ResultType<CustomerResponseDto>> {
     // Validating command...
@@ -67,6 +71,7 @@ export class CreateCustomerCommandHandler
       value.idNumber,
       value.idExpiration,
       value.nextOfKin,
+      value.income,
       value.accountName,
       value.accountNumber,
       value.bank

@@ -47,16 +47,16 @@ export class CentralDbContext {
     }
   }
 
-  public async getTenant(tenantId: string): Promise<Tenant | null> {
+  public async getTenant(lenderId: string): Promise<Tenant | null> {
     // Check Redis for cached tenant configuration
-    const cachedConfig = await this._redisService.get(`tenant:${tenantId}`);
+    const cachedConfig = await this._redisService.get(`lender:${lenderId}`);
     if (cachedConfig) return JSON.parse(cachedConfig);
 
     // Fetch from central database if not in cache
-    const tenant = await this.tenants.findById(tenantId);
+    const tenant = await this.tenants.findOne({ lenderId });
     if (tenant) {
       // Cache in Redis
-      await this._redisService.set(`tenant:${tenantId}`, JSON.stringify(tenant), 86400);
+      await this._redisService.set(`lender:${lenderId}`, JSON.stringify(tenant), 86400);
     }
 
     return tenant;

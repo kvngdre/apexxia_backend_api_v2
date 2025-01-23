@@ -3,7 +3,6 @@ import { Tenant } from "@domain/tenant";
 
 export class AuthenticationResponseDto {
   private constructor(
-    public readonly tenantId: string,
     public readonly subdomain: string,
     public readonly lenderId: string,
     public readonly userId: string,
@@ -16,8 +15,7 @@ export class AuthenticationResponseDto {
 
   public static from(user: User, tenant: Tenant, token?: string) {
     return new AuthenticationResponseDto(
-      tenant._id!.toString(),
-      tenant!.subdomain.concat(".localhost:4048/api/v1"),
+      tenant.subdomain.concat(".localhost:4048/api/v1"),
       user.lenderId.toString(),
       user._id.toString(),
       user.displayName,

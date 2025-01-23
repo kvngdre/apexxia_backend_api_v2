@@ -20,7 +20,7 @@ export class AuditTrail extends Entity {
 
     timestamp: {
       type: Date,
-      required: true
+      default: new Date()
     },
 
     action: {

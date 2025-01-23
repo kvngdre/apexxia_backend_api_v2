@@ -5,6 +5,7 @@ export enum LoanStatus {
   DENIED = "denied",
   DISBURSED = "disbursed",
   DISCONTINUED = "discontinued",
+  EVALUATING = "evaluating",
   LIQUIDATED = "liquidated",
   NEW = "new",
   PENDING = "pending"
